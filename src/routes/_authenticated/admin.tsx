@@ -176,8 +176,14 @@ function Admin() {
               <Input label="Address line" value={content.address} onChange={(v) => setContent({ ...content, address: v })} />
               <Input label="Address subline" value={content.addressSub} onChange={(v) => setContent({ ...content, addressSub: v })} />
               <Input label="Phone" value={content.phone} onChange={(v) => setContent({ ...content, phone: v })} />
+              <Input label="Phone 2 (WhatsApp)" value={content.phone2} onChange={(v) => setContent({ ...content, phone2: v })} />
               <Input label="Hours" value={content.hours} onChange={(v) => setContent({ ...content, hours: v })} />
               <Input label="Map embed query (Google Maps query, e.g. 'Avenue Habib Bourguiba, Beni Khiar')" value={content.mapQuery} onChange={(v) => setContent({ ...content, mapQuery: v })} />
+              <Input label="Instagram handle" value={content.instagram} onChange={(v) => setContent({ ...content, instagram: v })} />
+              <Input label="Instagram URL" value={content.instagramUrl} onChange={(v) => setContent({ ...content, instagramUrl: v })} />
+              <Input label="Facebook page name" value={content.facebook} onChange={(v) => setContent({ ...content, facebook: v })} />
+              <Input label="Facebook URL" value={content.facebookUrl} onChange={(v) => setContent({ ...content, facebookUrl: v })} />
+
             </Section>
 
             <div className="flex items-center gap-4 sticky bottom-4 bg-card border border-border rounded-lg p-4 shadow-2xl">
