@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: "Omega Fitness",
           description: "Premium gym in Beni Khiar, Tunisia offering strength training, cardio, group classes and personal coaching.",
           url: "https://omega-fitness-club.lovable.app",
-          telephone: "+216 23 124 005",
+          telephone: "+216 20 084 304",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Avenue Habib Bourguiba",
