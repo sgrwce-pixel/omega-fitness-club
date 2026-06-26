@@ -144,7 +144,7 @@ function Account() {
             <>
               <div className="font-display text-2xl mt-2">No active plan</div>
               <p className="text-sm text-muted-foreground mt-2">Visit the gym or call us to activate a plan.</p>
-              <a href="tel:+21623124005" className="mt-4 block text-center rounded-md bg-primary text-primary-foreground py-2 font-semibold">Call +216 23 124 005</a>
+              <a href="tel:+21620084304" className="mt-4 block text-center rounded-md bg-primary text-primary-foreground py-2 font-semibold">Call +216 20 084 304</a>
             </>
           )}
         </aside>
