@@ -57,6 +57,6 @@ export const DEFAULT_CONTENT: SiteContent = {
   mapQuery: "Avenue Habib Bourguiba, Beni Khiar, Tunisia",
   instagram: "Omegafitness.club",
   instagramUrl: "https://instagram.com/omegafitness.club",
-  facebook: "Omega Fitness Club",
-  facebookUrl: "https://facebook.com/Omega-Fitness-Club",
+  facebook: "club.omegafit",
+  facebookUrl: "https://facebook.com/club.omegafit",
 };
