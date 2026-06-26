@@ -326,8 +326,31 @@ function Reviews() {
   );
 }
 
+function buildMapSrc(q: string): string {
+  const trimmed = (q || "").trim();
+  // Full Google Maps embed URL pasted directly
+  if (/^https?:\/\/(www\.)?google\.[^/]+\/maps\/embed/i.test(trimmed)) return trimmed;
+  // Any other Google Maps URL → use as embedded query
+  if (/^https?:\/\//i.test(trimmed)) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(trimmed)}&output=embed`;
+  }
+  // "lat,lng" coordinates → drop a precise pin
+  const coords = trimmed.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+  if (coords) {
+    return `https://www.google.com/maps?q=${coords[1]},${coords[2]}&z=17&output=embed`;
+  }
+  // Plain address / place name
+  return `https://www.google.com/maps?q=${encodeURIComponent(trimmed)}&output=embed`;
+}
+
+function buildMapLink(q: string): string {
+  const trimmed = (q || "").trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
+}
+
 function Contact({ c }: { c: SiteContent }) {
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(c.mapQuery)}&output=embed`;
+  const mapSrc = buildMapSrc(c.mapQuery);
   return (
     <section id="contact" className="relative py-24 lg:py-32 overflow-hidden border-t border-border">
       <div className="container-x">
@@ -351,7 +374,8 @@ function Contact({ c }: { c: SiteContent }) {
             />
           </div>
           <div className="lg:col-span-2 grid gap-4 content-start">
-            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.mapQuery)}`} target="_blank" rel="noreferrer" className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
+            <a href={buildMapLink(c.mapQuery)} target="_blank" rel="noreferrer" className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
+
               <div className="text-xs tracking-widest text-primary">LOCATION</div>
               <div className="font-display text-2xl mt-2">{c.address}</div>
               <div className="text-muted-foreground">{c.addressSub}</div>
