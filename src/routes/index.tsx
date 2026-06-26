@@ -130,10 +130,10 @@ function Hero({ c }: { c: SiteContent }) {
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold">
+            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine pulse-ring hover-lift">
               Start Training <span className="transition group-hover:translate-x-1">→</span>
             </a>
-            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition">
+            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine hover-lift">
               Tour the Gym
             </a>
           </div>
