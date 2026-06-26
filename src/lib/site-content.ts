@@ -17,8 +17,13 @@ export type SiteContent = {
   address: string;
   addressSub: string;
   phone: string;
+  phone2: string;
   hours: string;
   mapQuery: string;
+  instagram: string;
+  instagramUrl: string;
+  facebook: string;
+  facebookUrl: string;
 };
 
 export const DEFAULT_CONTENT: SiteContent = {
@@ -46,7 +51,12 @@ export const DEFAULT_CONTENT: SiteContent = {
   ],
   address: "Avenue Habib Bourguiba",
   addressSub: "Beni Khiar 8060, Tunisia",
-  phone: "+216 23 124 005",
+  phone: "+216 20 084 304",
+  phone2: "+216 50 084 304",
   hours: "Open Daily · Closes 11 PM",
   mapQuery: "Avenue Habib Bourguiba, Beni Khiar, Tunisia",
+  instagram: "Omegafitness.club",
+  instagramUrl: "https://instagram.com/omegafitness.club",
+  facebook: "Omega Fitness Club",
+  facebookUrl: "https://facebook.com/Omega-Fitness-Club",
 };
