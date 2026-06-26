@@ -28,18 +28,31 @@ const reviews = [
 function Home() {
   const [c, setC] = useState<SiteContent>(DEFAULT_CONTENT);
   const [signedIn, setSignedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     supabase.from("site_content").select("value").eq("key", CONTENT_KEY).maybeSingle()
       .then(({ data }) => { if (data?.value) setC({ ...DEFAULT_CONTENT, ...(data.value as Partial<SiteContent>) }); });
-    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    const checkAdmin = async (userId: string | undefined) => {
+      if (!userId) { setIsAdmin(false); return; }
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+      setIsAdmin(!!data);
+    };
+    supabase.auth.getSession().then(({ data }) => {
+      setSignedIn(!!data.session);
+      checkAdmin(data.session?.user.id);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSignedIn(!!s);
+      checkAdmin(s?.user.id);
+    });
     return () => { sub.subscription.unsubscribe(); };
   }, []);
 
   return (
     <div className="min-h-screen text-foreground">
-      <Nav c={c} signedIn={signedIn} />
+      <Nav c={c} signedIn={signedIn} isAdmin={isAdmin} />
+
       <Hero c={c} />
       <Marquee />
       <About c={c} />
@@ -53,7 +66,7 @@ function Home() {
   );
 }
 
-function Nav({ c, signedIn }: { c: SiteContent; signedIn: boolean }) {
+function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAdmin: boolean }) {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between py-4">
@@ -71,14 +84,22 @@ function Nav({ c, signedIn }: { c: SiteContent; signedIn: boolean }) {
         </nav>
         <div className="flex items-center gap-2">
           {signedIn ? (
-            <Link to="/account" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
-              My Account
-            </Link>
+            <>
+              <Link to="/account" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                My Account
+              </Link>
+              {isAdmin && (
+                <Link to="/admin" className="rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                  Admin Panel
+                </Link>
+              )}
+            </>
           ) : (
             <Link to="/auth" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
               Sign In
             </Link>
           )}
+
           <a href="#pricing" className="rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
             Join Now
           </a>
