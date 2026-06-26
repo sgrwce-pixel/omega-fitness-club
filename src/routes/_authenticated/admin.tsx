@@ -178,7 +178,7 @@ function Admin() {
               <Input label="Phone" value={content.phone} onChange={(v) => setContent({ ...content, phone: v })} />
               <Input label="Phone 2 (WhatsApp)" value={content.phone2} onChange={(v) => setContent({ ...content, phone2: v })} />
               <Input label="Hours" value={content.hours} onChange={(v) => setContent({ ...content, hours: v })} />
-              <Input label="Map embed query (Google Maps query, e.g. 'Avenue Habib Bourguiba, Beni Khiar')" value={content.mapQuery} onChange={(v) => setContent({ ...content, mapQuery: v })} />
+              <MapLocationField value={content.mapQuery} onChange={(v) => setContent({ ...content, mapQuery: v })} />
               <Input label="Instagram handle" value={content.instagram} onChange={(v) => setContent({ ...content, instagram: v })} />
               <Input label="Instagram URL" value={content.instagramUrl} onChange={(v) => setContent({ ...content, instagramUrl: v })} />
               <Input label="Facebook page name" value={content.facebook} onChange={(v) => setContent({ ...content, facebook: v })} />
@@ -293,3 +293,48 @@ function Textarea({ label, value, onChange }: { label: string; value: string; on
     </label>
   );
 }
+
+function MapLocationField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const trimmed = (value || "").trim();
+  const coords = trimmed.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+  let mode = "Address / place name";
+  if (/^https?:\/\//i.test(trimmed)) mode = "Google Maps URL";
+  else if (coords) mode = `Coordinates (lat ${coords[1]}, lng ${coords[2]})`;
+  const previewSrc = /^https?:\/\/(www\.)?google\.[^/]+\/maps\/embed/i.test(trimmed)
+    ? trimmed
+    : coords
+      ? `https://www.google.com/maps?q=${coords[1]},${coords[2]}&z=17&output=embed`
+      : `https://www.google.com/maps?q=${encodeURIComponent(trimmed || "Beni Khiar, Tunisia")}&output=embed`;
+  return (
+    <div className="space-y-2">
+      <label className="block">
+        <div className="text-xs tracking-widest text-muted-foreground mb-1">MAP LOCATION</div>
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Address, 'lat,lng' coordinates, or a Google Maps URL"
+          className="w-full rounded-md bg-background border border-border px-3 py-2 focus:outline-none focus:border-primary"
+        />
+      </label>
+      <div className="text-xs text-muted-foreground leading-relaxed">
+        Detected: <span className="text-primary font-semibold">{mode}</span>.
+        For the most precise pin, open{" "}
+        <a href="https://www.google.com/maps" target="_blank" rel="noreferrer" className="underline hover:text-primary">Google Maps</a>,
+        right-click your exact spot, click the coordinates to copy them, then paste here (e.g. <code className="text-foreground">36.4561,10.8123</code>).
+        You can also paste a full Google Maps share link or embed URL.
+      </div>
+      <div className="rounded-md overflow-hidden border border-border h-56">
+        <iframe
+          title="Map preview"
+          src={previewSrc}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+      </div>
+    </div>
+  );
+}
+
