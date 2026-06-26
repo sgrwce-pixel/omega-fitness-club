@@ -19,29 +19,41 @@ type Member = {
   id: string; email: string | null; full_name: string | null; phone: string | null;
   created_at: string;
 };
-type MembershipRow = { user_id: string; plan: string; status: string; start_date: string; end_date: string | null };
+type MembershipRow = { id?: string; user_id: string; plan: string; status: string; start_date: string; end_date: string | null };
+type PlanRequest = { id: string; user_id: string; plan: string; message: string | null; status: string; created_at: string };
 
 function Admin() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"content" | "members">("content");
+  const [tab, setTab] = useState<"content" | "members" | "requests">("content");
   const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
   const [members, setMembers] = useState<Member[]>([]);
   const [memberships, setMemberships] = useState<Record<string, MembershipRow>>({});
+  const [endDates, setEndDates] = useState<Record<string, string>>({});
+  const [requests, setRequests] = useState<PlanRequest[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase.from("site_content").select("value").eq("key", CONTENT_KEY).maybeSingle();
-      if (data?.value) setContent({ ...DEFAULT_CONTENT, ...(data.value as Partial<SiteContent>) });
-      const { data: p } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
-      setMembers((p ?? []) as Member[]);
-      const { data: m } = await supabase.from("memberships").select("*");
-      const map: Record<string, MembershipRow> = {};
-      (m ?? []).forEach((r) => { map[(r as MembershipRow).user_id] = r as MembershipRow; });
-      setMemberships(map);
-    })();
-  }, []);
+  async function loadAll() {
+    const { data } = await supabase.from("site_content").select("value").eq("key", CONTENT_KEY).maybeSingle();
+    if (data?.value) setContent({ ...DEFAULT_CONTENT, ...(data.value as Partial<SiteContent>) });
+    const { data: p } = await supabase.from("profiles").select("*").order("created_at", { ascending: false });
+    setMembers((p ?? []) as Member[]);
+    const { data: m } = await supabase.from("memberships").select("*");
+    const map: Record<string, MembershipRow> = {};
+    const dates: Record<string, string> = {};
+    (m ?? []).forEach((r) => {
+      const row = r as MembershipRow;
+      map[row.user_id] = row;
+      dates[row.user_id] = row.end_date ?? "";
+    });
+    setMemberships(map);
+    setEndDates(dates);
+    const { data: rq } = await (supabase.from("plan_requests" as never) as never)
+      .select("*").order("created_at", { ascending: false });
+    setRequests((rq ?? []) as PlanRequest[]);
+  }
+
+  useEffect(() => { loadAll(); }, []);
 
   async function saveContent() {
     setSaving(true); setMsg(null);
@@ -50,7 +62,44 @@ function Admin() {
     setMsg(error ? error.message : "Site updated! Refresh the home page.");
   }
 
+  async function saveEndDate(userId: string) {
+    const ms = memberships[userId];
+    const end = endDates[userId] || null;
+    if (ms) {
+      await supabase.from("memberships").update({ end_date: end }).eq("user_id", userId);
+    } else {
+      await supabase.from("memberships").insert({
+        user_id: userId, plan: "monthly", status: "active",
+        start_date: new Date().toISOString().slice(0, 10), end_date: end,
+      } as never);
+    }
+    await loadAll();
+  }
+
+  async function approveRequest(r: PlanRequest) {
+    const today = new Date().toISOString().slice(0, 10);
+    const existing = memberships[r.user_id];
+    if (existing?.id) {
+      await supabase.from("memberships").update({
+        plan: r.plan, status: "active", start_date: today,
+      }).eq("id", existing.id);
+    } else {
+      await supabase.from("memberships").insert({
+        user_id: r.user_id, plan: r.plan, status: "active", start_date: today,
+      } as never);
+    }
+    await (supabase.from("plan_requests" as never) as never).update({ status: "approved" }).eq("id", r.id);
+    await loadAll();
+  }
+
+  async function rejectRequest(r: PlanRequest) {
+    await (supabase.from("plan_requests" as never) as never).update({ status: "rejected" }).eq("id", r.id);
+    await loadAll();
+  }
+
   async function signOut() { await supabase.auth.signOut(); navigate({ to: "/" }); }
+
+  const pendingCount = requests.filter((r) => r.status === "pending").length;
 
   return (
     <div className="min-h-screen">
@@ -69,9 +118,9 @@ function Admin() {
           </div>
         </div>
         <div className="container-x flex gap-1 -mb-px">
-          {(["content", "members"] as const).map((t) => (
+          {(["content", "members", "requests"] as const).map((t) => (
             <button key={t} onClick={() => setTab(t)} className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === t ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
-              {t === "content" ? "Site content" : `Members (${members.length})`}
+              {t === "content" ? "Site content" : t === "members" ? `Members (${members.length})` : `Plan Requests${pendingCount ? ` (${pendingCount})` : ""}`}
             </button>
           ))}
         </div>
@@ -138,7 +187,7 @@ function Admin() {
               {msg && <span className="text-sm text-primary">{msg}</span>}
             </div>
           </div>
-        ) : (
+        ) : tab === "members" ? (
           <div className="rounded-xl border border-border overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-card text-left">
@@ -148,6 +197,7 @@ function Admin() {
                   <th className="px-4 py-3">Phone</th>
                   <th className="px-4 py-3">Plan</th>
                   <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">End date</th>
                   <th className="px-4 py-3">Joined</th>
                 </tr>
               </thead>
@@ -161,15 +211,51 @@ function Admin() {
                       <td className="px-4 py-3 text-muted-foreground">{m.phone || "—"}</td>
                       <td className="px-4 py-3 capitalize">{ms?.plan || "—"}</td>
                       <td className="px-4 py-3"><span className={ms?.status === "active" ? "text-primary" : "text-muted-foreground"}>{ms?.status || "none"}</span></td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="date"
+                            value={endDates[m.id] ?? ""}
+                            onChange={(e) => setEndDates({ ...endDates, [m.id]: e.target.value })}
+                            className="rounded-md bg-background border border-border px-2 py-1"
+                          />
+                          <button onClick={() => saveEndDate(m.id)} className="rounded-md bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">Save</button>
+                        </div>
+                      </td>
                       <td className="px-4 py-3 text-muted-foreground">{new Date(m.created_at).toLocaleDateString()}</td>
                     </tr>
                   );
                 })}
                 {members.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">No members yet.</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">No members yet.</td></tr>
                 )}
               </tbody>
             </table>
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            {requests.length === 0 && (
+              <div className="rounded-xl border border-border p-8 text-center text-muted-foreground">No plan requests yet.</div>
+            )}
+            {requests.map((r) => {
+              const member = members.find((m) => m.id === r.user_id);
+              return (
+                <div key={r.id} className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+                  <div>
+                    <div className="font-semibold">{member?.full_name || "—"} <span className="text-muted-foreground text-sm">· {member?.email}</span></div>
+                    <div className="text-sm mt-1">Requested plan: <span className="text-primary capitalize font-semibold">{r.plan}</span></div>
+                    {r.message && <div className="text-sm text-muted-foreground mt-1">"{r.message}"</div>}
+                    <div className="text-xs text-muted-foreground mt-1">{new Date(r.created_at).toLocaleString()} · status: <span className="capitalize">{r.status}</span></div>
+                  </div>
+                  {r.status === "pending" && (
+                    <div className="flex gap-2">
+                      <button onClick={() => approveRequest(r)} className="rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-bold">Approve</button>
+                      <button onClick={() => rejectRequest(r)} className="rounded-md border border-border px-4 py-2 text-sm font-semibold hover:border-primary">Reject</button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </main>
