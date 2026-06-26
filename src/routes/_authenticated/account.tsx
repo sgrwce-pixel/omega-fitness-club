@@ -148,6 +148,39 @@ function Account() {
             </>
           )}
         </aside>
+
+        <section className="lg:col-span-3 rounded-xl border border-border bg-card p-6">
+          <h2 className="font-display text-2xl">REQUEST A PLAN</h2>
+          <p className="text-sm text-muted-foreground">Pick a plan and submit a request. An admin will review and activate it.</p>
+          {request && request.status === "pending" ? (
+            <div className="mt-4 rounded-lg border border-primary/40 bg-primary/10 p-4">
+              <div className="text-sm">Your request for <span className="text-primary font-semibold capitalize">{request.plan}</span> is <span className="text-primary font-semibold">pending</span> review.</div>
+              {request.message && <div className="text-xs text-muted-foreground mt-1">"{request.message}"</div>}
+            </div>
+          ) : (
+            <>
+              {request && (
+                <div className="mt-4 text-sm text-muted-foreground">
+                  Last request: <span className="capitalize">{request.plan}</span> — <span className={request.status === "approved" ? "text-primary" : ""}>{request.status}</span>
+                </div>
+              )}
+              <div className="mt-4 grid sm:grid-cols-3 gap-2">
+                {(["monthly", "quarterly", "annual"] as const).map((p) => (
+                  <button key={p} type="button" onClick={() => setReqPlan(p)}
+                    className={`rounded-md border px-3 py-2 text-sm font-semibold capitalize transition ${reqPlan === p ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-primary"}`}>
+                    {p}
+                  </button>
+                ))}
+              </div>
+              <textarea value={reqMsg} onChange={(e) => setReqMsg(e.target.value)} rows={3} placeholder="Optional message…"
+                className="mt-3 w-full rounded-md bg-background border border-border px-3 py-2" />
+              <button onClick={submitRequest} disabled={reqSubmitting}
+                className="mt-3 rounded-md bg-primary text-primary-foreground px-5 py-2 font-semibold disabled:opacity-60">
+                {reqSubmitting ? "Submitting…" : "Submit request"}
+              </button>
+            </>
+          )}
+        </section>
       </main>
     </div>
   );
