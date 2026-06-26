@@ -389,6 +389,11 @@ function Footer({ c }: { c: SiteContent }) {
           <div className="w-8 h-8 rounded bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
           <span>© {new Date().getFullYear()} {c.brandName} · Beni Khiar, Tunisia</span>
         </div>
+        <div className="flex items-center gap-4">
+          <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-primary">@{c.instagram.replace(/^@/, "")}</a>
+          <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="hover:text-primary">{c.facebook}</a>
+          <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="hover:text-primary">{c.phone}</a>
+        </div>
         <div className="font-display tracking-widest">DON'T GIVE UP.</div>
       </div>
     </footer>
