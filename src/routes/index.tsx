@@ -175,7 +175,9 @@ function About({ c }: { c: SiteContent }) {
     <section id="about" className="container-x py-24 lg:py-32">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative">
-          <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
+          <div className="img-zoom rounded-lg overflow-hidden">
+            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
+          </div>
           <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-5 max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">EST. 2024</div>
             <div className="font-display text-xl mt-1">A new era of training</div>
