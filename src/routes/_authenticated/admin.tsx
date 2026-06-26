@@ -48,7 +48,7 @@ function Admin() {
     });
     setMemberships(map);
     setEndDates(dates);
-    const { data: rq } = await (supabase.from("plan_requests" as never) as never)
+    const { data: rq } = await (supabase as any).from("plan_requests")
       .select("*").order("created_at", { ascending: false });
     setRequests((rq ?? []) as PlanRequest[]);
   }
@@ -88,12 +88,12 @@ function Admin() {
         user_id: r.user_id, plan: r.plan, status: "active", start_date: today,
       } as never);
     }
-    await (supabase.from("plan_requests" as never) as never).update({ status: "approved" }).eq("id", r.id);
+    await (supabase as any).from("plan_requests").update({ status: "approved" }).eq("id", r.id);
     await loadAll();
   }
 
   async function rejectRequest(r: PlanRequest) {
-    await (supabase.from("plan_requests" as never) as never).update({ status: "rejected" }).eq("id", r.id);
+    await (supabase as any).from("plan_requests").update({ status: "rejected" }).eq("id", r.id);
     await loadAll();
   }
 
