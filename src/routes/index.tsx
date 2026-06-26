@@ -355,11 +355,24 @@ function Contact({ c }: { c: SiteContent }) {
             <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
               <div className="text-xs tracking-widest text-primary">CALL</div>
               <div className="font-display text-2xl mt-2">{c.phone}</div>
-              <div className="text-muted-foreground">Call to book your visit</div>
+              {c.phone2 && (
+                <a href={`tel:${c.phone2.replace(/\s/g, "")}`} className="block font-display text-2xl text-foreground/90 hover:text-primary">{c.phone2}</a>
+              )}
+              <div className="text-muted-foreground mt-1">Call or WhatsApp to book your visit</div>
             </a>
             <div className="rounded-lg border border-primary/30 bg-primary/10 p-6">
               <div className="text-xs tracking-widest text-primary">HOURS</div>
               <div className="font-display text-2xl mt-2">{c.hours}</div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition">
+                <div className="text-xs tracking-widest text-primary">INSTAGRAM</div>
+                <div className="font-display text-base mt-1 truncate">@{c.instagram.replace(/^@/, "")}</div>
+              </a>
+              <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition">
+                <div className="text-xs tracking-widest text-primary">FACEBOOK</div>
+                <div className="font-display text-base mt-1 truncate">{c.facebook}</div>
+              </a>
             </div>
           </div>
         </div>
