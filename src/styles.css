@@ -109,3 +109,63 @@
   mix-blend-mode: screen;
 }
 .tape::after { left: auto; right: 20px; transform: rotate(6deg); top: auto; bottom: -10px; }
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes ken-burns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1%, -1.5%); }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(138,255,60,0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(138,255,60,0); }
+  100% { box-shadow: 0 0 0 0 rgba(138,255,60,0); }
+}
+@keyframes glow-breath {
+  0%, 100% { box-shadow: 0 0 18px rgba(138,255,60,0.25); }
+  50% { box-shadow: 0 0 38px rgba(138,255,60,0.55); }
+}
+@keyframes tilt-hover {
+  0%, 100% { transform: rotate(-0.5deg); }
+  50% { transform: rotate(0.5deg); }
+}
+
+@utility float-y { animation: float-y 6s ease-in-out infinite; }
+@utility ken-burns {
+  overflow: hidden;
+}
+.ken-burns img { animation: ken-burns 14s ease-in-out infinite alternate; transition: transform .8s ease; }
+@utility hover-lift {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease, border-color .35s ease;
+}
+.hover-lift:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -18px rgba(138,255,60,0.45); }
+@utility pulse-ring { animation: pulse-ring 2.2s ease-out infinite; }
+@utility glow-pulse { animation: glow-breath 3.4s ease-in-out infinite; }
+@utility tilt-soft { animation: tilt-hover 6s ease-in-out infinite; }
+
+@utility img-zoom {
+  overflow: hidden;
+  display: block;
+}
+.img-zoom img { transition: transform .8s cubic-bezier(.2,.8,.2,1), filter .6s ease; }
+.img-zoom:hover img { transform: scale(1.08); filter: brightness(1.05) contrast(1.05); }
+
+@utility btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform .9s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.btn-shine:hover::before { transform: translateX(120%); }
+
