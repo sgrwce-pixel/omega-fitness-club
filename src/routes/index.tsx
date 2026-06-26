@@ -1,32 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import dontGiveUp from "@/assets/dont-give-up.png.asset.json";
 import dumbbells from "@/assets/dumbbells.png.asset.json";
 import stayStrong from "@/assets/stay-strong.png.asset.json";
 import stronger from "@/assets/stronger.png.asset.json";
 import cableMachine from "@/assets/cable-machine.png.asset.json";
+import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
-
-const programs = [
-  { title: "Strength", desc: "Build raw power with free weights, racks and Hammer Strength machines." },
-  { title: "HIIT & Cardio", desc: "Burn fat and elevate endurance with high-intensity circuits." },
-  { title: "Personal Training", desc: "1-on-1 coaching tailored to your goals, level and lifestyle." },
-  { title: "Bodybuilding", desc: "Sculpt and shred with structured hypertrophy programs." },
-];
 
 const stats = [
   { n: "500+", l: "Active Members" },
   { n: "2", l: "Expert Coaches" },
   { n: "50+", l: "Weekly Sessions" },
   { n: "7", l: "Days a Week" },
-];
-
-const plans = [
-  { name: "Monthly", price: "80", per: "DT / month", feats: ["Full gym access", "Locker room", "Free WiFi"], popular: false },
-  { name: "Quarterly", price: "210", per: "DT / 3 months", feats: ["Full gym access", "1 PT session/month", "Nutrition guide", "Group classes"], popular: true },
-  { name: "Annual", price: "720", per: "DT / year", feats: ["Full gym access", "4 PT sessions", "Nutrition plan", "All classes", "Priority booking"], popular: false },
 ];
 
 const reviews = [
@@ -36,31 +26,42 @@ const reviews = [
 ];
 
 function Home() {
+  const [c, setC] = useState<SiteContent>(DEFAULT_CONTENT);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.from("site_content").select("value").eq("key", CONTENT_KEY).maybeSingle()
+      .then(({ data }) => { if (data?.value) setC({ ...DEFAULT_CONTENT, ...(data.value as Partial<SiteContent>) }); });
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    return () => { sub.subscription.unsubscribe(); };
+  }, []);
+
   return (
     <div className="min-h-screen text-foreground">
-      <Nav />
-      <Hero />
+      <Nav c={c} signedIn={signedIn} />
+      <Hero c={c} />
       <Marquee />
-      <About />
-      <Programs />
+      <About c={c} />
+      <Programs c={c} />
       <Facility />
-      <Pricing />
+      <Pricing c={c} />
       <Reviews />
-      <Contact />
-      <Footer />
+      <Contact c={c} />
+      <Footer c={c} />
     </div>
   );
 }
 
-function Nav() {
+function Nav({ c, signedIn }: { c: SiteContent; signedIn: boolean }) {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between py-4">
         <a href="#top" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-xl">Ω</div>
           <div className="leading-tight">
-            <div className="font-display tracking-wider text-lg">OMEGA FITNESS</div>
-            <div className="text-[10px] tracking-[0.25em] text-muted-foreground">HEALTH IS WEALTH</div>
+            <div className="font-display tracking-wider text-lg">{c.brandName}</div>
+            <div className="text-[10px] tracking-[0.25em] text-muted-foreground">{c.tagline}</div>
           </div>
         </a>
         <nav className="hidden md:flex items-center gap-8 text-sm">
@@ -68,15 +69,27 @@ function Nav() {
             <a key={l} href={`#${l.toLowerCase()}`} className="hover:text-primary transition">{l}</a>
           ))}
         </nav>
-        <a href="#pricing" className="rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
-          Join Now
-        </a>
+        <div className="flex items-center gap-2">
+          {signedIn ? (
+            <Link to="/account" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+              My Account
+            </Link>
+          ) : (
+            <Link to="/auth" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+              Sign In
+            </Link>
+          )}
+          <a href="#pricing" className="rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+            Join Now
+          </a>
+        </div>
       </div>
     </header>
   );
 }
 
-function Hero() {
+function Hero({ c }: { c: SiteContent }) {
+  const parts = c.heroTitle.split("{HL}");
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -87,17 +100,14 @@ function Hero() {
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-4 py-1.5 text-xs tracking-[0.25em] text-primary">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            BENI KHIAR · TUNISIA
+            {c.locationBadge}
           </span>
           <h1 className="font-display mt-6 text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight">
-            FORGE THE{" "}
-            <span className="text-primary" style={{ textShadow: "0 0 40px rgba(138,255,60,0.4)" }}>STRONGEST</span>{" "}
-            VERSION OF YOU.
+            {parts[0]}
+            <span className="text-primary" style={{ textShadow: "0 0 40px rgba(138,255,60,0.4)" }}>{c.heroHighlight}</span>
+            {parts[1] ?? ""}
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl">
-            At Omega Fitness we don't just train bodies — we build discipline, confidence and a community
-            that pushes you beyond your limits. State-of-the-art equipment. Expert coaches. Real results.
-          </p>
+          <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
           <div className="mt-8 flex flex-wrap gap-4">
             <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold">
               Start Training <span className="transition group-hover:translate-x-1">→</span>
@@ -137,32 +147,25 @@ function Marquee() {
   );
 }
 
-function About() {
+function About({ c }: { c: SiteContent }) {
   return (
     <section id="about" className="container-x py-24 lg:py-32">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative">
-          <img src={cableMachine.url} alt="Omega Fitness training floor" className="rounded-lg w-full h-[520px] object-cover" />
+          <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
           <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-5 max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">EST. 2024</div>
             <div className="font-display text-xl mt-1">A new era of training</div>
           </div>
         </div>
         <div>
-          <div className="text-primary text-xs tracking-[0.3em] font-semibold">ABOUT OMEGA FITNESS</div>
+          <div className="text-primary text-xs tracking-[0.3em] font-semibold">ABOUT {c.brandName}</div>
           <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none">
             MORE THAN A GYM.<br />
             <span className="text-primary">A LIFESTYLE.</span>
           </h2>
-          <p className="mt-6 text-muted-foreground">
-            Located in the heart of Beni Khiar, Omega Fitness is the destination for serious athletes and
-            beginners alike. Our space combines elite equipment, motivating energy, and coaches who care
-            about your progress.
-          </p>
-          <p className="mt-4 text-muted-foreground">
-            Whether you're chasing strength, fat loss, or just a healthier life — we've built the environment
-            to make it happen.
-          </p>
+          <p className="mt-6 text-muted-foreground">{c.aboutP1}</p>
+          <p className="mt-4 text-muted-foreground">{c.aboutP2}</p>
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
             {[
               ["Premium Equipment", "Hammer Strength & more"],
@@ -190,7 +193,7 @@ function About() {
   );
 }
 
-function Programs() {
+function Programs({ c }: { c: SiteContent }) {
   return (
     <section id="programs" className="bg-card border-y border-border py-24">
       <div className="container-x">
@@ -199,13 +202,11 @@ function Programs() {
             <div className="text-primary text-xs tracking-[0.3em] font-semibold">WHAT WE OFFER</div>
             <h2 className="font-display text-5xl md:text-6xl mt-3">TRAIN YOUR WAY</h2>
           </div>
-          <p className="max-w-md text-muted-foreground">
-            Four core paths. One mission — make you stronger every single session.
-          </p>
+          <p className="max-w-md text-muted-foreground">Four core paths. One mission — make you stronger every single session.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {programs.map((p, i) => (
-            <div key={p.title} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition">
+          {c.programs.map((p, i) => (
+            <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition">
               <div className="font-display text-6xl text-border group-hover:text-primary/20 transition">0{i + 1}</div>
               <h3 className="font-display text-2xl mt-2">{p.title}</h3>
               <p className="text-sm text-muted-foreground mt-3">{p.desc}</p>
@@ -223,12 +224,8 @@ function Facility() {
     <section id="facility" className="container-x py-24 lg:py-32">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">THE FACILITY</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3">
-          BUILT FOR <span className="text-primary">RESULTS</span>
-        </h2>
-        <p className="mt-4 text-muted-foreground">
-          From premium dumbbells to a full functional zone — every square meter is designed to push you further.
-        </p>
+        <h2 className="font-display text-5xl md:text-6xl mt-3">BUILT FOR <span className="text-primary">RESULTS</span></h2>
+        <p className="mt-4 text-muted-foreground">From premium dumbbells to a full functional zone — every square meter is designed to push you further.</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
         <img src={dumbbells.url} alt="Hammer Strength dumbbells" className="col-span-12 md:col-span-8 h-[360px] w-full object-cover rounded-lg" />
@@ -244,7 +241,7 @@ function Facility() {
   );
 }
 
-function Pricing() {
+function Pricing({ c }: { c: SiteContent }) {
   return (
     <section id="pricing" className="relative py-24 lg:py-32 border-y border-border bg-card">
       <div className="container-x">
@@ -253,7 +250,7 @@ function Pricing() {
           <h2 className="font-display text-5xl md:text-6xl mt-3">CHOOSE YOUR PLAN</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((p) => (
+          {c.plans.map((p) => (
             <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow" : "border-border bg-background"}`}>
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold tracking-widest px-3 py-1 rounded">
@@ -267,14 +264,12 @@ function Pricing() {
               </div>
               <ul className="mt-6 space-y-3 text-sm">
                 {p.feats.map((f) => (
-                  <li key={f} className="flex items-center gap-2">
-                    <span className="text-primary">✓</span> {f}
-                  </li>
+                  <li key={f} className="flex items-center gap-2"><span className="text-primary">✓</span> {f}</li>
                 ))}
               </ul>
-              <a href="tel:+21623124005" className={`mt-8 block text-center rounded-md py-3 font-semibold transition ${p.popular ? "bg-primary text-primary-foreground" : "border border-border hover:border-primary"}`}>
+              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition ${p.popular ? "bg-primary text-primary-foreground" : "border border-border hover:border-primary"}`}>
                 Get Started
-              </a>
+              </Link>
             </div>
           ))}
         </div>
@@ -306,37 +301,45 @@ function Reviews() {
   );
 }
 
-function Contact() {
+function Contact({ c }: { c: SiteContent }) {
+  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(c.mapQuery)}&output=embed`;
   return (
-    <section id="contact" className="relative py-24 lg:py-32 overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <img src={stronger.url} alt="" className="w-full h-full object-cover opacity-30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/70" />
-      </div>
-      <div className="container-x grid lg:grid-cols-2 gap-12 items-center">
-        <div>
+    <section id="contact" className="relative py-24 lg:py-32 overflow-hidden border-t border-border">
+      <div className="container-x">
+        <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">VISIT US</div>
           <h2 className="font-display text-5xl md:text-7xl mt-3 leading-none">
-            READY TO<br /><span className="text-primary">START?</span>
+            READY TO <span className="text-primary">START?</span>
           </h2>
-          <p className="mt-6 text-muted-foreground max-w-md">
-            Drop by for a tour or call us — your transformation begins the moment you walk in.
-          </p>
+          <p className="mt-6 text-muted-foreground">Drop by for a tour or call us — your transformation begins the moment you walk in.</p>
         </div>
-        <div className="grid gap-4">
-          <a href="https://www.google.com/maps?cid=0x1302a37c3fc954d3:0x8cc18cdd86fe74a" target="_blank" rel="noreferrer" className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
-            <div className="text-xs tracking-widest text-primary">LOCATION</div>
-            <div className="font-display text-2xl mt-2">Avenue Habib Bourguiba</div>
-            <div className="text-muted-foreground">Beni Khiar 8060, Tunisia</div>
-          </a>
-          <a href="tel:+21623124005" className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
-            <div className="text-xs tracking-widest text-primary">CALL</div>
-            <div className="font-display text-2xl mt-2">+216 23 124 005</div>
-            <div className="text-muted-foreground">Call to book your visit</div>
-          </a>
-          <div className="rounded-lg border border-primary/30 bg-primary/10 p-6">
-            <div className="text-xs tracking-widest text-primary">HOURS</div>
-            <div className="font-display text-2xl mt-2">Open Daily · Closes 11 PM</div>
+        <div className="grid lg:grid-cols-5 gap-6">
+          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-border bg-card h-[440px]">
+            <iframe
+              title="Omega Fitness location"
+              src={mapSrc}
+              width="100%"
+              height="100%"
+              style={{ border: 0, filter: "grayscale(0.4) contrast(1.1)" }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+          <div className="lg:col-span-2 grid gap-4 content-start">
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.mapQuery)}`} target="_blank" rel="noreferrer" className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
+              <div className="text-xs tracking-widest text-primary">LOCATION</div>
+              <div className="font-display text-2xl mt-2">{c.address}</div>
+              <div className="text-muted-foreground">{c.addressSub}</div>
+            </a>
+            <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
+              <div className="text-xs tracking-widest text-primary">CALL</div>
+              <div className="font-display text-2xl mt-2">{c.phone}</div>
+              <div className="text-muted-foreground">Call to book your visit</div>
+            </a>
+            <div className="rounded-lg border border-primary/30 bg-primary/10 p-6">
+              <div className="text-xs tracking-widest text-primary">HOURS</div>
+              <div className="font-display text-2xl mt-2">{c.hours}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -344,13 +347,13 @@ function Contact() {
   );
 }
 
-function Footer() {
+function Footer({ c }: { c: SiteContent }) {
   return (
     <footer className="border-t border-border py-10">
       <div className="container-x flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
-          <span>© {new Date().getFullYear()} Omega Fitness · Beni Khiar, Tunisia</span>
+          <span>© {new Date().getFullYear()} {c.brandName} · Beni Khiar, Tunisia</span>
         </div>
         <div className="font-display tracking-widest">DON'T GIVE UP.</div>
       </div>
