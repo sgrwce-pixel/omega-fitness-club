@@ -130,10 +130,10 @@ function Hero({ c }: { c: SiteContent }) {
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold">
+            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine pulse-ring hover-lift">
               Start Training <span className="transition group-hover:translate-x-1">→</span>
             </a>
-            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition">
+            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine hover-lift">
               Tour the Gym
             </a>
           </div>
@@ -143,9 +143,11 @@ function Hero({ c }: { c: SiteContent }) {
           </div>
         </div>
         <div className="relative hidden lg:block">
-          <div className="absolute -top-6 -left-6 right-6 bottom-6 border-2 border-primary/40 rounded-lg" />
-          <img src={stayStrong.url} alt="Stay strong" className="relative rounded-lg w-full h-[560px] object-cover" />
-          <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3">
+          <div className="absolute -top-6 -left-6 right-6 bottom-6 border-2 border-primary/40 rounded-lg tilt-soft" />
+          <div className="img-zoom relative rounded-lg overflow-hidden">
+            <img src={stayStrong.url} alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
+          </div>
+          <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 float-y">
             NO EXCUSES
           </div>
         </div>
@@ -173,7 +175,9 @@ function About({ c }: { c: SiteContent }) {
     <section id="about" className="container-x py-24 lg:py-32">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative">
-          <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
+          <div className="img-zoom rounded-lg overflow-hidden">
+            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
+          </div>
           <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-5 max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">EST. 2024</div>
             <div className="font-display text-xl mt-1">A new era of training</div>
@@ -249,10 +253,10 @@ function Facility() {
         <p className="mt-4 text-muted-foreground">From premium dumbbells to a full functional zone — every square meter is designed to push you further.</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <img src={dumbbells.url} alt="Hammer Strength dumbbells" className="col-span-12 md:col-span-8 h-[360px] w-full object-cover rounded-lg" />
-        <img src={stronger.url} alt="Stronger than you think" className="col-span-12 md:col-span-4 h-[360px] w-full object-cover rounded-lg" />
-        <img src={cableMachine.url} alt="Cable machines" className="col-span-12 md:col-span-5 h-[320px] w-full object-cover rounded-lg" />
-        <img src={stayStrong.url} alt="Stay strong poster" className="col-span-12 md:col-span-4 h-[320px] w-full object-cover rounded-lg" />
+        <div className="img-zoom col-span-12 md:col-span-8 rounded-lg overflow-hidden"><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift"><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift"><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom col-span-12 md:col-span-4 rounded-lg overflow-hidden"><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
         <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
           <div className="font-display text-3xl leading-none">COME SEE IT FOR YOURSELF.</div>
           <a href="#contact" className="inline-flex items-center gap-2 font-semibold mt-4">Visit us →</a>
@@ -288,7 +292,7 @@ function Pricing({ c }: { c: SiteContent }) {
                   <li key={f} className="flex items-center gap-2"><span className="text-primary">✓</span> {f}</li>
                 ))}
               </ul>
-              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition ${p.popular ? "bg-primary text-primary-foreground" : "border border-border hover:border-primary"}`}>
+              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition btn-shine hover-lift ${p.popular ? "bg-primary text-primary-foreground pulse-ring" : "border border-border hover:border-primary"}`}>
                 Get Started
               </Link>
             </div>
@@ -352,28 +356,29 @@ function Contact({ c }: { c: SiteContent }) {
               <div className="font-display text-2xl mt-2">{c.address}</div>
               <div className="text-muted-foreground">{c.addressSub}</div>
             </a>
-            <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
+            <div className="rounded-lg border border-border bg-card p-6 hover:border-primary transition hover-lift">
               <div className="text-xs tracking-widest text-primary">CALL</div>
-              <div className="font-display text-2xl mt-2">{c.phone}</div>
+              <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="block font-display text-2xl mt-2 hover:text-primary transition">{c.phone}</a>
               {c.phone2 && (
-                <a href={`tel:${c.phone2.replace(/\s/g, "")}`} className="block font-display text-2xl text-foreground/90 hover:text-primary">{c.phone2}</a>
+                <a href={`tel:${c.phone2.replace(/\s/g, "")}`} className="block font-display text-2xl hover:text-primary transition">{c.phone2}</a>
               )}
               <div className="text-muted-foreground mt-1">Call or WhatsApp to book your visit</div>
-            </a>
-            <div className="rounded-lg border border-primary/30 bg-primary/10 p-6">
+            </div>
+            <div className="rounded-lg border border-primary/30 bg-primary/10 p-6 glow-pulse">
               <div className="text-xs tracking-widest text-primary">HOURS</div>
               <div className="font-display text-2xl mt-2">{c.hours}</div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition">
+              <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
                 <div className="text-xs tracking-widest text-primary">INSTAGRAM</div>
                 <div className="font-display text-base mt-1 truncate">@{c.instagram.replace(/^@/, "")}</div>
               </a>
-              <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition">
+              <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
                 <div className="text-xs tracking-widest text-primary">FACEBOOK</div>
                 <div className="font-display text-base mt-1 truncate">{c.facebook}</div>
               </a>
             </div>
+
           </div>
         </div>
       </div>
