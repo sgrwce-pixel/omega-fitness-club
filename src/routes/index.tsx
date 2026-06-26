@@ -292,7 +292,7 @@ function Pricing({ c }: { c: SiteContent }) {
                   <li key={f} className="flex items-center gap-2"><span className="text-primary">✓</span> {f}</li>
                 ))}
               </ul>
-              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition ${p.popular ? "bg-primary text-primary-foreground" : "border border-border hover:border-primary"}`}>
+              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition btn-shine hover-lift ${p.popular ? "bg-primary text-primary-foreground pulse-ring" : "border border-border hover:border-primary"}`}>
                 Get Started
               </Link>
             </div>
