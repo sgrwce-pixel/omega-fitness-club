@@ -186,7 +186,7 @@ function About({ c }: { c: SiteContent }) {
         </div>
         <div>
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">ABOUT {c.brandName}</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none">
+          <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover">
             MORE THAN A GYM.<br />
             <span className="text-primary">A LIFESTYLE.</span>
           </h2>
@@ -208,11 +208,12 @@ function About({ c }: { c: SiteContent }) {
           <div className="mt-10 grid grid-cols-4 gap-4">
             {stats.map((s) => (
               <div key={s.l}>
-                <div className="font-display text-3xl md:text-4xl text-primary">{s.n}</div>
+                <StatNumber value={s.n} />
                 <div className="text-xs text-muted-foreground tracking-wider mt-1">{s.l}</div>
               </div>
             ))}
           </div>
+
         </div>
       </div>
     </section>
@@ -226,19 +227,20 @@ function Programs({ c }: { c: SiteContent }) {
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div>
             <div className="text-primary text-xs tracking-[0.3em] font-semibold">WHAT WE OFFER</div>
-            <h2 className="font-display text-5xl md:text-6xl mt-3">TRAIN YOUR WAY</h2>
+            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">TRAIN YOUR WAY</h2>
           </div>
           <p className="max-w-md text-muted-foreground">Four core paths. One mission — make you stronger every single session.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {c.programs.map((p, i) => (
-            <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition">
+            <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition wobble-on-hover">
               <div className="font-display text-6xl text-border group-hover:text-primary/20 transition">0{i + 1}</div>
               <h3 className="font-display text-2xl mt-2">{p.title}</h3>
               <p className="text-sm text-muted-foreground mt-3">{p.desc}</p>
               <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full border border-border grid place-items-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition">→</div>
             </div>
           ))}
+
         </div>
       </div>
     </section>
@@ -250,18 +252,19 @@ function Facility() {
     <section id="facility" className="container-x py-24 lg:py-32">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">THE FACILITY</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3">BUILT FOR <span className="text-primary">RESULTS</span></h2>
+        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">BUILT FOR <span className="text-primary">RESULTS</span></h2>
         <p className="mt-4 text-muted-foreground">From premium dumbbells to a full functional zone — every square meter is designed to push you further.</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="img-zoom col-span-12 md:col-span-8 rounded-lg overflow-hidden"><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift"><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift"><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
-        <div className="img-zoom col-span-12 md:col-span-4 rounded-lg overflow-hidden"><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden"><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift"><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift"><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden"><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
         <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
           <div className="font-display text-3xl leading-none">COME SEE IT FOR YOURSELF.</div>
-          <a href="#contact" className="inline-flex items-center gap-2 font-semibold mt-4">Visit us →</a>
+          <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">Visit us <span className="transition-transform group-hover:translate-x-1">→</span></a>
         </div>
+
       </div>
     </section>
   );
@@ -273,11 +276,11 @@ function Pricing({ c }: { c: SiteContent }) {
       <div className="container-x">
         <div className="text-center mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">MEMBERSHIPS</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3">CHOOSE YOUR PLAN</h2>
+          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">CHOOSE YOUR PLAN</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {c.plans.map((p) => (
-            <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow" : "border-border bg-background"}`}>
+            <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold tracking-widest px-3 py-1 rounded">
                   MOST POPULAR
@@ -293,11 +296,12 @@ function Pricing({ c }: { c: SiteContent }) {
                   <li key={f} className="flex items-center gap-2"><span className="text-primary">✓</span> {f}</li>
                 ))}
               </ul>
-              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition btn-shine hover-lift ${p.popular ? "bg-primary text-primary-foreground pulse-ring" : "border border-border hover:border-primary"}`}>
+              <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition btn-shine ${p.popular ? "bg-primary text-primary-foreground btn-3d" : "border border-border hover:border-primary btn-3d-dark"}`}>
                 Get Started
               </Link>
             </div>
           ))}
+
         </div>
       </div>
     </section>
