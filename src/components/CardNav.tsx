@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 
-export type CardNavLink = { label: string; href: string; ariaLabel?: string };
+export type CardNavLink = {
+  label: string;
+  href?: string;
+  ariaLabel?: string;
+  icon?: string;
+  onClick?: () => void | Promise<void>;
+};
 export type CardNavItem = {
   label: string;
   bgColor: string;
@@ -9,70 +17,87 @@ export type CardNavItem = {
 };
 
 type Props = {
-  logo?: string;
-  logoAlt?: string;
   items: CardNavItem[];
-  baseColor?: string;
-  menuColor?: string;
-  buttonBgColor?: string;
-  buttonTextColor?: string;
   ctaLabel?: string;
   ctaHref?: string;
-  theme?: "light" | "dark";
+  userEmail?: string;
 };
 
 export default function CardNav({
-  logo,
-  logoAlt = "Logo",
   items,
-  baseColor = "#fff",
-  menuColor = "#000",
-  buttonBgColor = "#111",
-  buttonTextColor = "#fff",
   ctaLabel = "Back to site",
   ctaHref = "/",
+  userEmail,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   return (
     <div className="sticky top-0 z-50 w-full px-4 pt-4">
       <div
-        className="mx-auto max-w-6xl rounded-2xl shadow-lg border border-black/5 overflow-hidden transition-all duration-500 ease-out"
-        style={{ background: baseColor, color: menuColor }}
+        ref={ref}
+        className="mx-auto max-w-6xl rounded-2xl border border-border bg-card/70 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-500 ease-out"
       >
         {/* Top bar */}
-        <div className="flex items-center justify-between px-5 h-16">
-          <a href="/" className="flex items-center gap-2">
-            {logo ? (
-              <img src={logo} alt={logoAlt} className="h-7 w-7" />
-            ) : (
-              <span className="font-display text-xl">Ω</span>
+        <div className="flex items-center justify-between px-5 h-16 gap-4">
+          <a href="/" className="flex items-center gap-2 min-w-0">
+            <span
+              className="font-display text-2xl text-primary leading-none"
+              style={{ textShadow: "0 0 24px rgba(138,255,60,0.5)" }}
+            >
+              Ω
+            </span>
+            <span className="font-semibold tracking-wide text-sm text-foreground hidden sm:inline">
+              OMEGA FITNESS
+            </span>
+          </a>
+
+          <div className="flex items-center gap-3 min-w-0">
+            {userEmail && (
+              <span className="hidden md:inline text-xs text-muted-foreground truncate max-w-[200px]">
+                {userEmail}
+              </span>
             )}
-            <span className="font-semibold tracking-wide text-sm">OMEGA FITNESS</span>
-          </a>
-
-          <button
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="relative w-10 h-10 grid place-items-center rounded-full hover:bg-black/5 transition"
-            style={{ color: menuColor }}
-          >
-            <span
-              className={`block w-5 h-0.5 bg-current transition-transform duration-300 ${open ? "translate-y-[3px] rotate-45" : "-translate-y-1"}`}
-            />
-            <span
-              className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "-translate-y-0 -rotate-45" : "translate-y-1"}`}
-            />
-          </button>
-
-          <a
-            href={ctaHref}
-            className="hidden sm:inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold tracking-wide transition hover:opacity-90"
-            style={{ background: buttonBgColor, color: buttonTextColor }}
-          >
-            {ctaLabel} →
-          </a>
+            <a
+              href={ctaHref}
+              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-xs font-semibold tracking-wide transition hover:opacity-90"
+            >
+              {ctaLabel} →
+            </a>
+            <button
+              aria-label="Toggle menu"
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="relative w-10 h-10 grid place-items-center rounded-full text-foreground hover:bg-white/10 transition"
+            >
+              <span
+                className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${
+                  open ? "rotate-45" : "-translate-y-1.5"
+                }`}
+              />
+              <span
+                className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${
+                  open ? "-rotate-45" : "translate-y-1.5"
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Expanding card panel */}
@@ -85,7 +110,7 @@ export default function CardNav({
               {items.map((it, i) => (
                 <div
                   key={it.label}
-                  className="rounded-xl p-5 transition-all duration-500 ease-out"
+                  className="group/card rounded-xl p-5 border-l-2 border-transparent hover:border-primary/30 transition-all duration-500 ease-out"
                   style={{
                     background: it.bgColor,
                     color: it.textColor,
@@ -99,14 +124,7 @@ export default function CardNav({
                   <ul className="mt-4 space-y-2">
                     {it.links.map((l) => (
                       <li key={l.label}>
-                        <a
-                          href={l.href}
-                          aria-label={l.ariaLabel ?? l.label}
-                          className="inline-flex items-center gap-2 text-sm hover:translate-x-1 transition-transform"
-                        >
-                          <span>→</span>
-                          <span className="underline-offset-4 hover:underline">{l.label}</span>
-                        </a>
+                        <CardLink link={l} />
                       </li>
                     ))}
                   </ul>
@@ -118,4 +136,54 @@ export default function CardNav({
       </div>
     </div>
   );
+}
+
+function CardLink({ link }: { link: CardNavLink }) {
+  const navigate = useNavigate();
+  const handleClick = async (e: React.MouseEvent) => {
+    if (link.onClick) {
+      e.preventDefault();
+      await link.onClick();
+    }
+  };
+
+  const content = (
+    <>
+      {link.icon && <span className="text-base leading-none">{link.icon}</span>}
+      <span className="underline-offset-4 group-hover:underline flex-1">{link.label}</span>
+      <span className="transition-transform group-hover:translate-x-1">→</span>
+    </>
+  );
+
+  if (link.onClick && !link.href) {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        aria-label={link.ariaLabel ?? link.label}
+        className="group inline-flex items-center gap-2 text-sm w-full text-left"
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <a
+      href={link.href ?? "#"}
+      onClick={handleClick}
+      aria-label={link.ariaLabel ?? link.label}
+      className="group inline-flex items-center gap-2 text-sm"
+    >
+      {content}
+    </a>
+  );
+}
+
+export function useSignOut() {
+  const navigate = useNavigate();
+  return async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/" });
+  };
 }
