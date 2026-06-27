@@ -1,5 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+function StatNumber({ value }: { value: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          el.classList.remove("number-pop");
+          // force reflow to restart the animation
+          void el.offsetWidth;
+          el.classList.add("number-pop");
+        }
+      });
+    }, { threshold: 0.5 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return <div ref={ref} className="font-display text-3xl md:text-4xl text-primary inline-block">{value}</div>;
+}
+
 import dontGiveUp from "@/assets/dont-give-up.png.asset.json";
 import dumbbells from "@/assets/dumbbells.png.asset.json";
 import stayStrong from "@/assets/stay-strong.png.asset.json";
@@ -313,7 +335,7 @@ function Reviews() {
     <section className="container-x py-24 lg:py-32">
       <div className="text-center mb-14">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">REVIEWS</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3">RATED 5.0 <span className="text-primary">★</span></h2>
+        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">RATED 5.0 <span className="text-primary">★</span></h2>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {reviews.map((r) => (
