@@ -130,10 +130,10 @@ function Hero({ c }: { c: SiteContent }) {
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine pulse-ring hover-lift">
+            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine btn-3d">
               Start Training <span className="transition group-hover:translate-x-1">→</span>
             </a>
-            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine hover-lift">
+            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine btn-3d-dark">
               Tour the Gym
             </a>
           </div>
@@ -147,9 +147,10 @@ function Hero({ c }: { c: SiteContent }) {
           <div className="img-zoom relative rounded-lg overflow-hidden">
             <img src={stayStrong.url} alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
           </div>
-          <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 float-y">
+          <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 jiggle">
             NO EXCUSES
           </div>
+
         </div>
       </div>
     </section>
