@@ -169,3 +169,80 @@
 }
 .btn-shine:hover::before { transform: translateX(120%); }
 
+/* ===== 3D press button effects ===== */
+@utility btn-3d {
+  transform: perspective(600px) translateY(0);
+  box-shadow: 0 6px 0 #4a9c1a, 0 8px 20px rgba(138,255,60,0.30);
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease;
+  will-change: transform;
+}
+.btn-3d:hover {
+  transform: perspective(600px) rotateX(8deg) rotateY(-4deg) translateY(3px);
+  box-shadow: 0 3px 0 #4a9c1a, 0 5px 14px rgba(138,255,60,0.40);
+}
+.btn-3d:active {
+  transform: perspective(600px) scale(0.96) translateY(2px);
+  box-shadow: 0 2px 0 #4a9c1a, 0 3px 8px rgba(138,255,60,0.35);
+}
+
+@utility btn-3d-dark {
+  transform: perspective(600px) translateY(0);
+  box-shadow: 0 6px 0 rgba(0,0,0,0.6), 0 8px 20px rgba(0,0,0,0.35);
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease;
+  will-change: transform;
+}
+.btn-3d-dark:hover {
+  transform: perspective(600px) rotateX(8deg) rotateY(-4deg) translateY(3px);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.6), 0 5px 14px rgba(0,0,0,0.45);
+}
+.btn-3d-dark:active {
+  transform: perspective(600px) scale(0.96) translateY(2px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.4);
+}
+
+/* ===== Jiggle / wiggle keyframes ===== */
+@keyframes jiggle {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  74% { transform: rotate(-3deg); }
+  80% { transform: rotate(3deg); }
+  86% { transform: rotate(-2deg); }
+  92% { transform: rotate(2deg); }
+}
+@keyframes wobble-card {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.03); }
+  50% { transform: scale(0.99); }
+  75% { transform: scale(1.01); }
+}
+@keyframes shake-img {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+}
+@keyframes breathe-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+}
+@keyframes text-jiggle {
+  0%, 100% { transform: skewX(0deg); }
+  33% { transform: skewX(-2deg); }
+  66% { transform: skewX(2deg); }
+}
+@keyframes number-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@utility jiggle { animation: jiggle 4s ease-in-out infinite; transform-origin: center; }
+@utility wobble-on-hover { transition: transform .2s ease; }
+.wobble-on-hover:hover { animation: wobble-card .4s ease-in-out; }
+@utility shake-on-hover {}
+.shake-on-hover:hover img { animation: shake-img .4s ease-in-out; }
+@utility breathe { animation: breathe-scale 3s ease-in-out infinite; }
+@utility text-jiggle-hover { display: inline-block; transition: transform .2s ease; }
+.text-jiggle-hover:hover { animation: text-jiggle .3s ease-in-out; }
+@utility number-pop { animation: number-pop .35s ease-out; }
+
+
