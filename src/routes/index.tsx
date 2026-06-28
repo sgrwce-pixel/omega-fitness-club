@@ -300,10 +300,10 @@ function Facility() {
         <p className="mt-4 text-muted-foreground">From premium dumbbells to a full functional zone — every square meter is designed to push you further.</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="img-zoom shake-on-hover data-inview-shake-placeholder col-span-12 md:col-span-8 rounded-lg overflow-hidden"><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover data-inview-shake-placeholder col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift"><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover data-inview-shake-placeholder col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift"><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover data-inview-shake-placeholder col-span-12 md:col-span-4 rounded-lg overflow-hidden"><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
         <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
           <div className="font-display text-3xl leading-none">COME SEE IT FOR YOURSELF.</div>
           <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">Visit us <span className="transition-transform group-hover:translate-x-1">→</span></a>
