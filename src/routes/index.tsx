@@ -71,6 +71,28 @@ function Home() {
     return () => { sub.subscription.unsubscribe(); };
   }, []);
 
+  // Trigger animations only when elements scroll into view.
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>("[data-inview]");
+    if (!els.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const el = e.target as HTMLElement;
+          el.classList.remove("in-view");
+          void el.offsetWidth; // restart animation
+          el.classList.add("in-view");
+          if (el.dataset.inview === "once") obs.unobserve(el);
+        } else {
+          (e.target as HTMLElement).classList.remove("in-view");
+        }
+      });
+    }, { threshold: 0.25, rootMargin: "0px 0px -10% 0px" });
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, [c]);
+
+
   return (
     <div className="min-h-screen text-foreground">
       <Nav c={c} signedIn={signedIn} isAdmin={isAdmin} />
@@ -169,7 +191,7 @@ function Hero({ c }: { c: SiteContent }) {
           <div className="img-zoom relative rounded-lg overflow-hidden">
             <img src={stayStrong.url} alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
           </div>
-          <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 jiggle">
+          <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 jiggle" data-inview>
             NO EXCUSES
           </div>
 
@@ -208,7 +230,7 @@ function About({ c }: { c: SiteContent }) {
         </div>
         <div>
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">ABOUT {c.brandName}</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover">
+          <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover" data-inview="once">
             MORE THAN A GYM.<br />
             <span className="text-primary">A LIFESTYLE.</span>
           </h2>
@@ -249,13 +271,13 @@ function Programs({ c }: { c: SiteContent }) {
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div>
             <div className="text-primary text-xs tracking-[0.3em] font-semibold">WHAT WE OFFER</div>
-            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">TRAIN YOUR WAY</h2>
+            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">TRAIN YOUR WAY</h2>
           </div>
           <p className="max-w-md text-muted-foreground">Four core paths. One mission — make you stronger every single session.</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {c.programs.map((p, i) => (
-            <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition wobble-on-hover">
+            <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition wobble-on-hover" data-inview>
               <div className="font-display text-6xl text-border group-hover:text-primary/20 transition">0{i + 1}</div>
               <h3 className="font-display text-2xl mt-2">{p.title}</h3>
               <p className="text-sm text-muted-foreground mt-3">{p.desc}</p>
@@ -274,14 +296,14 @@ function Facility() {
     <section id="facility" className="container-x py-24 lg:py-32">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">THE FACILITY</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">BUILT FOR <span className="text-primary">RESULTS</span></h2>
+        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">BUILT FOR <span className="text-primary">RESULTS</span></h2>
         <p className="mt-4 text-muted-foreground">From premium dumbbells to a full functional zone — every square meter is designed to push you further.</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden"><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift"><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift"><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden"><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
         <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
           <div className="font-display text-3xl leading-none">COME SEE IT FOR YOURSELF.</div>
           <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">Visit us <span className="transition-transform group-hover:translate-x-1">→</span></a>
@@ -298,7 +320,7 @@ function Pricing({ c }: { c: SiteContent }) {
       <div className="container-x">
         <div className="text-center mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">MEMBERSHIPS</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">CHOOSE YOUR PLAN</h2>
+          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">CHOOSE YOUR PLAN</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {c.plans.map((p) => (
@@ -335,7 +357,7 @@ function Reviews() {
     <section className="container-x py-24 lg:py-32">
       <div className="text-center mb-14">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">REVIEWS</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover">RATED 5.0 <span className="text-primary">★</span></h2>
+        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">RATED 5.0 <span className="text-primary">★</span></h2>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
         {reviews.map((r) => (
