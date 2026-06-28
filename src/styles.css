@@ -246,3 +246,42 @@
 @utility number-pop { animation: number-pop .35s ease-out; }
 
 
+
+/* ===== Ambient background orbs ===== */
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(80px, -60px) scale(1.1); }
+  66% { transform: translate(-40px, 80px) scale(0.95); }
+}
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-100px, 60px) scale(1.05); }
+  66% { transform: translate(60px, -80px) scale(1.1); }
+}
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-80px, 100px) scale(1.08); }
+}
+@keyframes drift-4 {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  25% { transform: translate(40px, -30px) scale(1.1); }
+  75% { transform: translate(-30px, 40px) scale(0.95); }
+}
+@keyframes rotate-bg {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ambient-orb { position: absolute; border-radius: 50%; will-change: transform; }
+.ambient-orb.orb-1 { animation: drift-1 18s ease-in-out infinite alternate; }
+.ambient-orb.orb-2 { animation: drift-2 22s ease-in-out infinite alternate; }
+.ambient-orb.orb-3 { animation: drift-3 16s ease-in-out infinite alternate; }
+.ambient-orb.orb-4 { animation: drift-4 12s ease-in-out infinite alternate; }
+
+.ambient-rotate {
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg at 30% 50%, transparent 60%, rgba(138,255,60,0.03) 70%, transparent 80%);
+  animation: rotate-bg 60s linear infinite;
+  will-change: transform;
+}
