@@ -238,7 +238,7 @@
 @utility jiggle { animation: jiggle 4s ease-in-out infinite; transform-origin: center; }
 @utility wobble-on-hover { transition: transform .2s ease; }
 .wobble-on-hover:hover { animation: wobble-card .4s ease-in-out; }
-@utility shake-on-hover {}
+@utility shake-on-hover { transition: transform .2s ease; }
 .shake-on-hover:hover img { animation: shake-img .4s ease-in-out; }
 @utility breathe { animation: breathe-scale 3s ease-in-out infinite; }
 @utility text-jiggle-hover { display: inline-block; transition: transform .2s ease; }
