@@ -234,14 +234,22 @@
   animation-play-state: paused;
   transform-origin: center;
 }
-.jiggle:hover { animation-play-state: running; }
+.jiggle:hover,
+.jiggle.in-view { animation-play-state: running; }
+
 @utility wobble-on-hover { transition: transform .2s ease; }
-.wobble-on-hover:hover { animation: wobble-card .4s ease-in-out; }
+.wobble-on-hover:hover,
+.wobble-on-hover.in-view { animation: wobble-card .5s ease-in-out; }
+
 @utility shake-on-hover { transition: transform .2s ease; }
-.shake-on-hover:hover img { animation: shake-img .4s ease-in-out; }
+.shake-on-hover:hover img,
+.shake-on-hover.in-view img { animation: shake-img .5s ease-in-out; }
+
 @utility breathe { animation: breathe-scale 3s ease-in-out infinite; }
 @utility text-jiggle-hover { display: inline-block; }
+.text-jiggle-hover.in-view { animation: text-jiggle .4s ease-in-out; }
 @utility number-pop { animation: number-pop .35s ease-out; }
+
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
