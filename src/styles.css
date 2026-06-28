@@ -222,12 +222,7 @@
 }
 @keyframes breathe-scale {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.015); }
-}
-@keyframes text-jiggle {
-  0%, 100% { transform: skewX(0deg); }
-  33% { transform: skewX(-2deg); }
-  66% { transform: skewX(2deg); }
+  50% { transform: scale(1.008); }
 }
 @keyframes number-pop {
   0% { transform: scale(1); }
@@ -235,15 +230,28 @@
   100% { transform: scale(1); }
 }
 
-@utility jiggle { animation: jiggle 4s ease-in-out infinite; transform-origin: center; }
+@utility jiggle {
+  animation: jiggle 4s ease-in-out infinite;
+  animation-play-state: paused;
+  transform-origin: center;
+}
+.jiggle:hover { animation-play-state: running; }
 @utility wobble-on-hover { transition: transform .2s ease; }
 .wobble-on-hover:hover { animation: wobble-card .4s ease-in-out; }
 @utility shake-on-hover { transition: transform .2s ease; }
 .shake-on-hover:hover img { animation: shake-img .4s ease-in-out; }
 @utility breathe { animation: breathe-scale 3s ease-in-out infinite; }
-@utility text-jiggle-hover { display: inline-block; transition: transform .2s ease; }
-.text-jiggle-hover:hover { animation: text-jiggle .3s ease-in-out; }
+@utility text-jiggle-hover { display: inline-block; }
 @utility number-pop { animation: number-pop .35s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 
 
 
