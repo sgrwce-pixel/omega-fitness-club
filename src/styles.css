@@ -169,36 +169,35 @@
 }
 .btn-shine:hover::before { transform: translateX(120%); }
 
-/* ===== 3D press button effects ===== */
+/* ===== Press button effects (cheap, no 3D transforms) ===== */
 @utility btn-3d {
-  transform: perspective(600px) translateY(0);
+  transform: translateY(0) scale(1);
   box-shadow: 0 6px 0 #4a9c1a, 0 8px 20px rgba(138,255,60,0.30);
   transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease;
-  will-change: transform;
 }
 .btn-3d:hover {
-  transform: perspective(600px) rotateX(8deg) rotateY(-4deg) translateY(3px);
-  box-shadow: 0 3px 0 #4a9c1a, 0 5px 14px rgba(138,255,60,0.40);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 9px 0 #4a9c1a, 0 12px 24px rgba(138,255,60,0.40);
 }
 .btn-3d:active {
-  transform: perspective(600px) scale(0.96) translateY(2px);
+  transform: translateY(1px) scale(0.98);
   box-shadow: 0 2px 0 #4a9c1a, 0 3px 8px rgba(138,255,60,0.35);
 }
 
 @utility btn-3d-dark {
-  transform: perspective(600px) translateY(0);
+  transform: translateY(0) scale(1);
   box-shadow: 0 6px 0 rgba(0,0,0,0.6), 0 8px 20px rgba(0,0,0,0.35);
   transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease;
-  will-change: transform;
 }
 .btn-3d-dark:hover {
-  transform: perspective(600px) rotateX(8deg) rotateY(-4deg) translateY(3px);
-  box-shadow: 0 3px 0 rgba(0,0,0,0.6), 0 5px 14px rgba(0,0,0,0.45);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 9px 0 rgba(0,0,0,0.6), 0 12px 24px rgba(0,0,0,0.45);
 }
 .btn-3d-dark:active {
-  transform: perspective(600px) scale(0.96) translateY(2px);
+  transform: translateY(1px) scale(0.98);
   box-shadow: 0 2px 0 rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.4);
 }
+
 
 /* ===== Jiggle / wiggle keyframes ===== */
 @keyframes jiggle {
