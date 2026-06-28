@@ -11,7 +11,6 @@ export default function AmbientBackground() {
         overflow: "hidden",
       }}
     >
-      <div className="ambient-rotate" />
       <div
         className="ambient-orb orb-1"
         style={{
@@ -20,9 +19,8 @@ export default function AmbientBackground() {
           top: "-150px",
           left: "-150px",
           background:
-            "radial-gradient(circle, #8AFF3C, transparent 70%)",
-          opacity: 0.08,
-          filter: "blur(120px)",
+            "radial-gradient(circle, rgba(138,255,60,0.55) 0%, rgba(138,255,60,0.25) 30%, transparent 70%)",
+          opacity: 0.12,
         }}
       />
       <div
@@ -33,9 +31,8 @@ export default function AmbientBackground() {
           bottom: "-100px",
           right: "-100px",
           background:
-            "radial-gradient(circle, #a8ff6e, transparent 70%)",
-          opacity: 0.06,
-          filter: "blur(120px)",
+            "radial-gradient(circle, rgba(168,255,110,0.5) 0%, rgba(168,255,110,0.22) 30%, transparent 70%)",
+          opacity: 0.09,
         }}
       />
       <div
@@ -46,9 +43,8 @@ export default function AmbientBackground() {
           top: "10%",
           right: "5%",
           background:
-            "radial-gradient(circle, #7c3aed, transparent 70%)",
-          opacity: 0.05,
-          filter: "blur(80px)",
+            "radial-gradient(circle, rgba(124,58,237,0.5) 0%, rgba(124,58,237,0.22) 30%, transparent 70%)",
+          opacity: 0.07,
         }}
       />
       <div
@@ -59,9 +55,8 @@ export default function AmbientBackground() {
           bottom: "10%",
           left: "45%",
           background:
-            "radial-gradient(circle, #d4ffaa, transparent 70%)",
-          opacity: 0.04,
-          filter: "blur(80px)",
+            "radial-gradient(circle, rgba(212,255,170,0.6) 0%, rgba(212,255,170,0.28) 30%, transparent 70%)",
+          opacity: 0.06,
         }}
       />
     </div>

@@ -169,36 +169,35 @@
 }
 .btn-shine:hover::before { transform: translateX(120%); }
 
-/* ===== 3D press button effects ===== */
+/* ===== Press button effects (cheap, no 3D transforms) ===== */
 @utility btn-3d {
-  transform: perspective(600px) translateY(0);
+  transform: translateY(0) scale(1);
   box-shadow: 0 6px 0 #4a9c1a, 0 8px 20px rgba(138,255,60,0.30);
   transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease;
-  will-change: transform;
 }
 .btn-3d:hover {
-  transform: perspective(600px) rotateX(8deg) rotateY(-4deg) translateY(3px);
-  box-shadow: 0 3px 0 #4a9c1a, 0 5px 14px rgba(138,255,60,0.40);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 9px 0 #4a9c1a, 0 12px 24px rgba(138,255,60,0.40);
 }
 .btn-3d:active {
-  transform: perspective(600px) scale(0.96) translateY(2px);
+  transform: translateY(1px) scale(0.98);
   box-shadow: 0 2px 0 #4a9c1a, 0 3px 8px rgba(138,255,60,0.35);
 }
 
 @utility btn-3d-dark {
-  transform: perspective(600px) translateY(0);
+  transform: translateY(0) scale(1);
   box-shadow: 0 6px 0 rgba(0,0,0,0.6), 0 8px 20px rgba(0,0,0,0.35);
   transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s ease;
-  will-change: transform;
 }
 .btn-3d-dark:hover {
-  transform: perspective(600px) rotateX(8deg) rotateY(-4deg) translateY(3px);
-  box-shadow: 0 3px 0 rgba(0,0,0,0.6), 0 5px 14px rgba(0,0,0,0.45);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 9px 0 rgba(0,0,0,0.6), 0 12px 24px rgba(0,0,0,0.45);
 }
 .btn-3d-dark:active {
-  transform: perspective(600px) scale(0.96) translateY(2px);
+  transform: translateY(1px) scale(0.98);
   box-shadow: 0 2px 0 rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.4);
 }
+
 
 /* ===== Jiggle / wiggle keyframes ===== */
 @keyframes jiggle {
@@ -222,12 +221,7 @@
 }
 @keyframes breathe-scale {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.015); }
-}
-@keyframes text-jiggle {
-  0%, 100% { transform: skewX(0deg); }
-  33% { transform: skewX(-2deg); }
-  66% { transform: skewX(2deg); }
+  50% { transform: scale(1.008); }
 }
 @keyframes number-pop {
   0% { transform: scale(1); }
@@ -235,15 +229,28 @@
   100% { transform: scale(1); }
 }
 
-@utility jiggle { animation: jiggle 4s ease-in-out infinite; transform-origin: center; }
+@utility jiggle {
+  animation: jiggle 4s ease-in-out infinite;
+  animation-play-state: paused;
+  transform-origin: center;
+}
+.jiggle:hover { animation-play-state: running; }
 @utility wobble-on-hover { transition: transform .2s ease; }
 .wobble-on-hover:hover { animation: wobble-card .4s ease-in-out; }
 @utility shake-on-hover { transition: transform .2s ease; }
 .shake-on-hover:hover img { animation: shake-img .4s ease-in-out; }
 @utility breathe { animation: breathe-scale 3s ease-in-out infinite; }
-@utility text-jiggle-hover { display: inline-block; transition: transform .2s ease; }
-.text-jiggle-hover:hover { animation: text-jiggle .3s ease-in-out; }
+@utility text-jiggle-hover { display: inline-block; }
 @utility number-pop { animation: number-pop .35s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 
 
 
@@ -267,21 +274,14 @@
   25% { transform: translate(40px, -30px) scale(1.1); }
   75% { transform: translate(-30px, 40px) scale(0.95); }
 }
-@keyframes rotate-bg {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
+.ambient-bg {
+  contain: strict;
+  transform: translateZ(0);
+}
 .ambient-orb { position: absolute; border-radius: 50%; will-change: transform; }
 .ambient-orb.orb-1 { animation: drift-1 18s ease-in-out infinite alternate; }
 .ambient-orb.orb-2 { animation: drift-2 22s ease-in-out infinite alternate; }
 .ambient-orb.orb-3 { animation: drift-3 16s ease-in-out infinite alternate; }
 .ambient-orb.orb-4 { animation: drift-4 12s ease-in-out infinite alternate; }
 
-.ambient-rotate {
-  position: absolute;
-  inset: -50%;
-  background: conic-gradient(from 0deg at 30% 50%, transparent 60%, rgba(138,255,60,0.03) 70%, transparent 80%);
-  animation: rotate-bg 60s linear infinite;
-  will-change: transform;
-}
