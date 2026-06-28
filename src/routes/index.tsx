@@ -71,6 +71,28 @@ function Home() {
     return () => { sub.subscription.unsubscribe(); };
   }, []);
 
+  // Trigger animations only when elements scroll into view.
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>("[data-inview]");
+    if (!els.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const el = e.target as HTMLElement;
+          el.classList.remove("in-view");
+          void el.offsetWidth; // restart animation
+          el.classList.add("in-view");
+          if (el.dataset.inview === "once") obs.unobserve(el);
+        } else {
+          (e.target as HTMLElement).classList.remove("in-view");
+        }
+      });
+    }, { threshold: 0.25, rootMargin: "0px 0px -10% 0px" });
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, [c]);
+
+
   return (
     <div className="min-h-screen text-foreground">
       <Nav c={c} signedIn={signedIn} isAdmin={isAdmin} />
