@@ -274,21 +274,14 @@
   25% { transform: translate(40px, -30px) scale(1.1); }
   75% { transform: translate(-30px, 40px) scale(0.95); }
 }
-@keyframes rotate-bg {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
+.ambient-bg {
+  contain: strict;
+  transform: translateZ(0);
+}
 .ambient-orb { position: absolute; border-radius: 50%; will-change: transform; }
 .ambient-orb.orb-1 { animation: drift-1 18s ease-in-out infinite alternate; }
 .ambient-orb.orb-2 { animation: drift-2 22s ease-in-out infinite alternate; }
 .ambient-orb.orb-3 { animation: drift-3 16s ease-in-out infinite alternate; }
 .ambient-orb.orb-4 { animation: drift-4 12s ease-in-out infinite alternate; }
 
-.ambient-rotate {
-  position: absolute;
-  inset: -50%;
-  background: conic-gradient(from 0deg at 30% 50%, transparent 60%, rgba(138,255,60,0.03) 70%, transparent 80%);
-  animation: rotate-bg 60s linear infinite;
-  will-change: transform;
-}
