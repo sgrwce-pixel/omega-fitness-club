@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://omega-fitness-club.lovable.app/sitemap.xml
