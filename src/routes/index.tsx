@@ -31,6 +31,46 @@ import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
+      { name: "description", content: "Omega Fitness Club in Beni Khiar, Tunisia — premium strength & cardio equipment, expert coaches, group classes and personal training. Open daily until 11pm." },
+      { property: "og:title", content: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
+      { property: "og:description", content: "Premium gym in Beni Khiar with strength, cardio, coaching and group classes. Join the strongest community in Tunisia." },
+      { property: "og:url", content: "https://omega-fitness-club.lovable.app/" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Omega Fitness" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
+      { name: "twitter:description", content: "Premium gym in Beni Khiar with strength, cardio, coaching and group classes." },
+    ],
+    links: [{ rel: "canonical", href: "https://omega-fitness-club.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Omega Fitness",
+          url: "https://omega-fitness-club.lovable.app",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Omega Fitness",
+          url: "https://omega-fitness-club.lovable.app",
+          logo: "https://omega-fitness-club.lovable.app/favicon.ico",
+          sameAs: [
+            "https://instagram.com/omegafitness.club",
+            "https://facebook.com/club.omegafit",
+          ],
+        }),
+      },
+    ],
+  }),
   component: Home,
 });
 
