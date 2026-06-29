@@ -94,7 +94,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6765605c-cc32-4596-9ef0-897665cc6032/id-preview-ada3445f--e2b0b90e-5a8b-4a9b-97d2-ef885dfcb0a9.lovable.app-1782474475373.png" },
     ],
     links: [
-      { rel: "canonical", href: "https://omega-fitness-club.lovable.app" },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
