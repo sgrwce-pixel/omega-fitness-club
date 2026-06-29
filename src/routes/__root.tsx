@@ -137,6 +137,9 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <meta name="robots" content="index, follow" />
+        {/* TODO: replace content with your Google Search Console verification token */}
+        <meta name="google-site-verification" content="" />
         <HeadContent />
       </head>
       <body>
