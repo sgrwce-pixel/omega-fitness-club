@@ -75,18 +75,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const stats = [
-  { n: "500+", l: "Active Members" },
-  { n: "2", l: "Expert Coaches" },
-  { n: "50+", l: "Weekly Sessions" },
-  { n: "7", l: "Days a Week" },
-];
-
-const reviews = [
-  { q: "Best gym in the region. Equipment is top tier and the vibe pushes you to give your best every session.", n: "Ahmed Chtioui" },
-  { q: "Friendly coaches, clean space, and real results. Omega Fitness truly changed my routine and my confidence.", n: "Soumaya Zardoum" },
-  { q: "I love training here. The energy is unmatched and the team genuinely cares about your progress.", n: "Eslem Chtioui" },
-];
 
 function Home() {
   const [c, setC] = useState<SiteContent>(DEFAULT_CONTENT);
