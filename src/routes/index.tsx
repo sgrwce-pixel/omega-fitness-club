@@ -29,6 +29,7 @@ import stronger from "@/assets/stronger.png.asset.json";
 import cableMachine from "@/assets/cable-machine.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
+import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
