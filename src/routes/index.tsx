@@ -360,9 +360,10 @@ function Pricing({ c }: { c: SiteContent }) {
       <div className="container-x">
         <div className="text-center mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">MEMBERSHIPS</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">CHOOSE YOUR PLAN</h2>
+          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">FITNESS + CARDIO</h2>
+          <p className="mt-3 text-muted-foreground text-sm">Choose your plan · <span className="text-primary font-semibold">+ 20 DT insurance fee</span></p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {c.plans.map((p) => (
             <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
               {p.popular && (
@@ -387,6 +388,7 @@ function Pricing({ c }: { c: SiteContent }) {
           ))}
 
         </div>
+        <p className="mt-6 text-center text-xs text-muted-foreground">* A one-time 20 DT insurance fee applies to all memberships.</p>
       </div>
     </section>
   );
