@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import AmbientBackground from "../components/AmbientBackground";
+import { I18nProvider } from "../lib/i18n";
 
 
 function NotFoundComponent() {
@@ -154,9 +155,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AmbientBackground />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <I18nProvider>
+        <AmbientBackground />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </I18nProvider>
     </QueryClientProvider>
 
   );

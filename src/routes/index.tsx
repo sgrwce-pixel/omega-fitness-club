@@ -29,6 +29,7 @@ import stronger from "@/assets/stronger.png.asset.json";
 import cableMachine from "@/assets/cable-machine.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
+import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -74,18 +75,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const stats = [
-  { n: "500+", l: "Active Members" },
-  { n: "2", l: "Expert Coaches" },
-  { n: "50+", l: "Weekly Sessions" },
-  { n: "7", l: "Days a Week" },
-];
-
-const reviews = [
-  { q: "Best gym in the region. Equipment is top tier and the vibe pushes you to give your best every session.", n: "Ahmed Chtioui" },
-  { q: "Friendly coaches, clean space, and real results. Omega Fitness truly changed my routine and my confidence.", n: "Soumaya Zardoum" },
-  { q: "I love training here. The energy is unmatched and the team genuinely cares about your progress.", n: "Eslem Chtioui" },
-];
 
 function Home() {
   const [c, setC] = useState<SiteContent>(DEFAULT_CONTENT);
@@ -133,24 +122,34 @@ function Home() {
   }, [c]);
 
 
+  const { t } = useI18n();
+  const tc = applyTranslations(c, t);
   return (
     <div className="min-h-screen text-foreground">
-      <Nav c={c} signedIn={signedIn} isAdmin={isAdmin} />
+      <Nav c={tc} signedIn={signedIn} isAdmin={isAdmin} />
 
-      <Hero c={c} />
+      <Hero c={tc} />
       <Marquee />
-      <About c={c} />
-      <Programs c={c} />
+      <About c={tc} />
+      <Programs c={tc} />
       <Facility />
-      <Pricing c={c} />
+      <Pricing c={tc} />
       <Reviews />
-      <Contact c={c} />
-      <Footer c={c} />
+      <Contact c={tc} />
+      <Footer c={tc} />
     </div>
   );
 }
 
 function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAdmin: boolean }) {
+  const { t } = useI18n();
+  const links: { key: string; label: string; href: string }[] = [
+    { key: "about", label: t.navAbout, href: "#about" },
+    { key: "programs", label: t.navPrograms, href: "#programs" },
+    { key: "facility", label: t.navFacility, href: "#facility" },
+    { key: "pricing", label: t.navPricing, href: "#pricing" },
+    { key: "contact", label: t.navContact, href: "#contact" },
+  ];
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between py-4">
@@ -162,30 +161,31 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
           </div>
         </a>
         <nav className="hidden md:flex items-center gap-8 text-sm">
-          {["About", "Programs", "Facility", "Pricing", "Contact"].map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="hover:text-primary transition">{l}</a>
+          {links.map((l) => (
+            <a key={l.key} href={l.href} className="hover:text-primary transition">{l.label}</a>
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher className="mr-1" />
           {signedIn ? (
             <>
               <Link to="/account" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
-                My Account
+                {t.myAccount}
               </Link>
               {isAdmin && (
                 <Link to="/admin" className="rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
-                  Admin Panel
+                  {t.adminPanel}
                 </Link>
               )}
             </>
           ) : (
             <Link to="/auth" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
-              Sign In
+              {t.signIn}
             </Link>
           )}
 
           <a href="#pricing" className="rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
-            Join Now
+            {t.joinNow}
           </a>
         </div>
       </div>
@@ -194,12 +194,14 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
 }
 
 function Hero({ c }: { c: SiteContent }) {
+  const { t, dir } = useI18n();
   const parts = c.heroTitle.split("{HL}");
+  const arrow = dir === "rtl" ? "←" : "→";
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <img src={dontGiveUp.url} alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/30" />
+        <div className={`absolute inset-0 ${dir === "rtl" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-background via-background/85 to-background/30`} />
       </div>
       <div className="container-x grid lg:grid-cols-2 gap-12 py-28 lg:py-40 items-center">
         <div>
@@ -215,15 +217,15 @@ function Hero({ c }: { c: SiteContent }) {
           <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
           <div className="mt-8 flex flex-wrap gap-4">
             <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine btn-3d">
-              Start Training <span className="transition group-hover:translate-x-1">→</span>
+              {t.startTraining} <span className={`transition ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span>
             </a>
             <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine btn-3d-dark">
-              Tour the Gym
+              {t.tourTheGym}
             </a>
           </div>
           <div className="mt-8 flex items-center gap-3 text-sm">
             <div className="text-primary text-lg">★★★★★</div>
-            <span className="text-muted-foreground">5.0 rated · loved by our community</span>
+            <span className="text-muted-foreground">{t.ratedLine}</span>
           </div>
         </div>
         <div className="relative hidden lg:block">
@@ -232,7 +234,7 @@ function Hero({ c }: { c: SiteContent }) {
             <img src={stayStrong.url} alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
           </div>
           <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 jiggle" data-inview>
-            NO EXCUSES
+            {t.noExcusesBadge}
           </div>
 
         </div>
@@ -244,7 +246,7 @@ function Hero({ c }: { c: SiteContent }) {
 function Marquee() {
   const words = ["DISCIPLINE", "★", "STRENGTH", "★", "COMMUNITY", "★", "PROGRESS", "★", "NO EXCUSES", "★"];
   return (
-    <div className="border-y border-border bg-primary text-primary-foreground overflow-hidden py-4">
+    <div className="border-y border-border bg-primary text-primary-foreground overflow-hidden py-4" dir="ltr">
       <div className="flex gap-12 whitespace-nowrap animate-[scroll_30s_linear_infinite]">
         {[0, 1, 2].flatMap((i) => words.map((w, j) => (
           <span key={`${i}-${j}`} className="font-display text-2xl tracking-widest">{w}</span>
@@ -256,6 +258,19 @@ function Marquee() {
 }
 
 function About({ c }: { c: SiteContent }) {
+  const { t } = useI18n();
+  const stats = [
+    { n: "500+", l: t.statActive },
+    { n: "2", l: t.statCoaches },
+    { n: "50+", l: t.statSessions },
+    { n: "7", l: t.statDays },
+  ];
+  const feats: [string, string][] = [
+    [t.featPremiumT, t.featPremiumD],
+    [t.featCoachesT, t.featCoachesD],
+    [t.featOpenT, t.featOpenD],
+    [t.featCommT, t.featCommD],
+  ];
   return (
     <section id="about" className="container-x py-24 lg:py-32">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -264,27 +279,22 @@ function About({ c }: { c: SiteContent }) {
             <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
           </div>
           <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-5 max-w-[220px] shadow-2xl">
-            <div className="text-xs text-muted-foreground tracking-widest">EST. 2024</div>
-            <div className="font-display text-xl mt-1">A new era of training</div>
+            <div className="text-xs text-muted-foreground tracking-widest">{t.est}</div>
+            <div className="font-display text-xl mt-1">{t.newEra}</div>
           </div>
         </div>
         <div>
-          <div className="text-primary text-xs tracking-[0.3em] font-semibold">ABOUT {c.brandName}</div>
+          <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.aboutKicker} {c.brandName}</div>
           <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover" data-inview="once">
-            MORE THAN A GYM.<br />
-            <span className="text-primary">A LIFESTYLE.</span>
+            {t.aboutHeadline1}<br />
+            <span className="text-primary">{t.aboutHeadline2}</span>
           </h2>
           <p className="mt-6 text-muted-foreground">{c.aboutP1}</p>
           <p className="mt-4 text-muted-foreground">{c.aboutP2}</p>
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
-            {[
-              ["Premium Equipment", "Hammer Strength & more"],
-              ["Certified Coaches", "Personalized programs"],
-              ["Open Late", "Until 11 PM daily"],
-              ["Community", "Train with the best"],
-            ].map(([t, d]) => (
-              <div key={t} className="rounded-lg border border-border bg-card p-4">
-                <div className="font-semibold">{t}</div>
+            {feats.map(([ttl, d]) => (
+              <div key={ttl} className="rounded-lg border border-border bg-card p-4">
+                <div className="font-semibold">{ttl}</div>
                 <div className="text-sm text-muted-foreground">{d}</div>
               </div>
             ))}
@@ -305,15 +315,17 @@ function About({ c }: { c: SiteContent }) {
 }
 
 function Programs({ c }: { c: SiteContent }) {
+  const { t, dir } = useI18n();
+  const arrow = dir === "rtl" ? "←" : "→";
   return (
     <section id="programs" className="bg-card border-y border-border py-24">
       <div className="container-x">
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div>
-            <div className="text-primary text-xs tracking-[0.3em] font-semibold">WHAT WE OFFER</div>
-            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">TRAIN YOUR WAY</h2>
+            <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.programsKicker}</div>
+            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.programsHeadline}</h2>
           </div>
-          <p className="max-w-md text-muted-foreground">Four core paths. One mission — make you stronger every single session.</p>
+          <p className="max-w-md text-muted-foreground">{t.programsSub}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {c.programs.map((p, i) => (
@@ -321,7 +333,7 @@ function Programs({ c }: { c: SiteContent }) {
               <div className="font-display text-6xl text-border group-hover:text-primary/20 transition">0{i + 1}</div>
               <h3 className="font-display text-2xl mt-2">{p.title}</h3>
               <p className="text-sm text-muted-foreground mt-3">{p.desc}</p>
-              <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full border border-border grid place-items-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition">→</div>
+              <div className={`absolute bottom-4 ${dir === "rtl" ? "left-4" : "right-4"} w-8 h-8 rounded-full border border-border grid place-items-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition`}>{arrow}</div>
             </div>
           ))}
 
@@ -332,12 +344,14 @@ function Programs({ c }: { c: SiteContent }) {
 }
 
 function Facility() {
+  const { t, dir } = useI18n();
+  const arrow = dir === "rtl" ? "←" : "→";
   return (
     <section id="facility" className="container-x py-24 lg:py-32">
       <div className="text-center max-w-2xl mx-auto mb-12">
-        <div className="text-primary text-xs tracking-[0.3em] font-semibold">THE FACILITY</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">BUILT FOR <span className="text-primary">RESULTS</span></h2>
-        <p className="mt-4 text-muted-foreground">From premium dumbbells to a full functional zone — every square meter is designed to push you further.</p>
+        <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.facilityKicker}</div>
+        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.facilityHeadline1} <span className="text-primary">{t.facilityHeadline2}</span></h2>
+        <p className="mt-4 text-muted-foreground">{t.facilitySub}</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
         <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
@@ -345,8 +359,8 @@ function Facility() {
         <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
         <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
         <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
-          <div className="font-display text-3xl leading-none">COME SEE IT FOR YOURSELF.</div>
-          <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">Visit us <span className="transition-transform group-hover:translate-x-1">→</span></a>
+          <div className="font-display text-3xl leading-none">{t.facilityCTA}</div>
+          <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">{t.visitUsShort} <span className={`transition-transform ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span></a>
         </div>
 
       </div>
@@ -355,20 +369,21 @@ function Facility() {
 }
 
 function Pricing({ c }: { c: SiteContent }) {
+  const { t } = useI18n();
   return (
     <section id="pricing" className="relative py-24 lg:py-32 border-y border-border bg-card">
       <div className="container-x">
         <div className="text-center mb-14">
-          <div className="text-primary text-xs tracking-[0.3em] font-semibold">MEMBERSHIPS</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">FITNESS + CARDIO</h2>
-          <p className="mt-3 text-muted-foreground text-sm">Choose your plan · <span className="text-primary font-semibold">+ 20 DT insurance fee</span></p>
+          <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.pricingKicker}</div>
+          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.pricingHeadline}</h2>
+          <p className="mt-3 text-muted-foreground text-sm">{t.pricingSub1} <span className="text-primary font-semibold">{t.insuranceFee}</span></p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {c.plans.map((p) => (
             <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold tracking-widest px-3 py-1 rounded">
-                  MOST POPULAR
+                  {t.mostPopular}
                 </div>
               )}
               <div className="font-display text-2xl tracking-wider">{p.name.toUpperCase()}</div>
@@ -382,33 +397,34 @@ function Pricing({ c }: { c: SiteContent }) {
                 ))}
               </ul>
               <Link to="/auth" className={`mt-8 block text-center rounded-md py-3 font-semibold transition btn-shine ${p.popular ? "bg-primary text-primary-foreground btn-3d" : "border border-border hover:border-primary btn-3d-dark"}`}>
-                Get Started
+                {t.getStarted}
               </Link>
             </div>
           ))}
 
         </div>
-        <p className="mt-6 text-center text-xs text-muted-foreground">* A one-time 20 DT insurance fee applies to all memberships.</p>
+        <p className="mt-6 text-center text-xs text-muted-foreground">{t.insuranceFootnote}</p>
       </div>
     </section>
   );
 }
 
 function Reviews() {
+  const { t } = useI18n();
   return (
     <section className="container-x py-24 lg:py-32">
       <div className="text-center mb-14">
-        <div className="text-primary text-xs tracking-[0.3em] font-semibold">REVIEWS</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">RATED 5.0 <span className="text-primary">★</span></h2>
+        <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.reviewsKicker}</div>
+        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.reviewsHeadline} <span className="text-primary">★</span></h2>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
-        {reviews.map((r) => (
+        {t.reviews.map((r) => (
           <div key={r.n} className="rounded-lg border border-border bg-card p-6">
             <div className="text-primary mb-3">★★★★★</div>
             <p className="text-foreground/90">"{r.q}"</p>
             <div className="mt-6 pt-4 border-t border-border">
               <div className="font-semibold">{r.n}</div>
-              <div className="text-xs text-muted-foreground">Verified member</div>
+              <div className="text-xs text-muted-foreground">{t.verifiedMember}</div>
             </div>
           </div>
         ))}
@@ -441,16 +457,17 @@ function buildMapLink(q: string): string {
 }
 
 function Contact({ c }: { c: SiteContent }) {
+  const { t } = useI18n();
   const mapSrc = buildMapSrc(c.mapQuery);
   return (
     <section id="contact" className="relative py-24 lg:py-32 overflow-hidden border-t border-border">
       <div className="container-x">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="text-primary text-xs tracking-[0.3em] font-semibold">VISIT US</div>
+          <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.visitUs}</div>
           <h2 className="font-display text-5xl md:text-7xl mt-3 leading-none">
-            READY TO <span className="text-primary">START?</span>
+            {t.readyToStart1} <span className="text-primary">{t.readyToStart2}</span>
           </h2>
-          <p className="mt-6 text-muted-foreground">Drop by for a tour or call us — your transformation begins the moment you walk in.</p>
+          <p className="mt-6 text-muted-foreground">{t.visitSub}</p>
         </div>
         <div className="grid lg:grid-cols-5 gap-6">
           <div className="lg:col-span-3 rounded-xl overflow-hidden border border-border bg-card h-[440px]">
@@ -467,30 +484,30 @@ function Contact({ c }: { c: SiteContent }) {
           <div className="lg:col-span-2 grid gap-4 content-start">
             <a href={buildMapLink(c.mapQuery)} target="_blank" rel="noreferrer" className="block rounded-lg border border-border bg-card p-6 hover:border-primary transition">
 
-              <div className="text-xs tracking-widest text-primary">LOCATION</div>
+              <div className="text-xs tracking-widest text-primary">{t.location}</div>
               <div className="font-display text-2xl mt-2">{c.address}</div>
               <div className="text-muted-foreground">{c.addressSub}</div>
             </a>
             <div className="rounded-lg border border-border bg-card p-6 hover:border-primary transition hover-lift">
-              <div className="text-xs tracking-widest text-primary">CALL</div>
-              <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="block font-display text-2xl mt-2 hover:text-primary transition">{c.phone}</a>
+              <div className="text-xs tracking-widest text-primary">{t.call}</div>
+              <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="block font-display text-2xl mt-2 hover:text-primary transition" dir="ltr">{c.phone}</a>
               {c.phone2 && (
-                <a href={`tel:${c.phone2.replace(/\s/g, "")}`} className="block font-display text-2xl hover:text-primary transition">{c.phone2}</a>
+                <a href={`tel:${c.phone2.replace(/\s/g, "")}`} className="block font-display text-2xl hover:text-primary transition" dir="ltr">{c.phone2}</a>
               )}
-              <div className="text-muted-foreground mt-1">Call or WhatsApp to book your visit</div>
+              <div className="text-muted-foreground mt-1">{t.callSub}</div>
             </div>
             <div className="rounded-lg border border-primary/30 bg-primary/10 p-6 glow-pulse">
-              <div className="text-xs tracking-widest text-primary">HOURS</div>
+              <div className="text-xs tracking-widest text-primary">{t.hoursLbl}</div>
               <div className="font-display text-2xl mt-2">{c.hours}</div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
-                <div className="text-xs tracking-widest text-primary">INSTAGRAM</div>
-                <div className="font-display text-base mt-1 truncate">@{c.instagram.replace(/^@/, "")}</div>
+                <div className="text-xs tracking-widest text-primary">{t.instagramLbl}</div>
+                <div className="font-display text-base mt-1 truncate" dir="ltr">@{c.instagram.replace(/^@/, "")}</div>
               </a>
               <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
-                <div className="text-xs tracking-widest text-primary">FACEBOOK</div>
-                <div className="font-display text-base mt-1 truncate">{c.facebook}</div>
+                <div className="text-xs tracking-widest text-primary">{t.facebookLbl}</div>
+                <div className="font-display text-base mt-1 truncate" dir="ltr">{c.facebook}</div>
               </a>
             </div>
 
@@ -502,20 +519,22 @@ function Contact({ c }: { c: SiteContent }) {
 }
 
 function Footer({ c }: { c: SiteContent }) {
+  const { t } = useI18n();
   return (
     <footer className="border-t border-border py-10">
       <div className="container-x flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
-          <span>© {new Date().getFullYear()} {c.brandName} · Beni Khiar, Tunisia</span>
+          <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
         </div>
         <div className="flex items-center gap-4">
-          <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-primary">@{c.instagram.replace(/^@/, "")}</a>
-          <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="hover:text-primary">{c.facebook}</a>
-          <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="hover:text-primary">{c.phone}</a>
+          <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">@{c.instagram.replace(/^@/, "")}</a>
+          <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">{c.facebook}</a>
+          <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="hover:text-primary" dir="ltr">{c.phone}</a>
         </div>
-        <div className="font-display tracking-widest">DON'T GIVE UP.</div>
+        <div className="font-display tracking-widest">{t.footerTagline}</div>
       </div>
     </footer>
   );
 }
+
