@@ -45,9 +45,10 @@ export const DEFAULT_CONTENT: SiteContent = {
     { title: "Bodybuilding", desc: "Sculpt and shred with structured hypertrophy programs." },
   ],
   plans: [
-    { name: "Monthly", price: "80", per: "DT / month", feats: ["Full gym access", "Locker room", "Free WiFi"] },
-    { name: "Quarterly", price: "210", per: "DT / 3 months", feats: ["Full gym access", "1 PT session/month", "Nutrition guide", "Group classes"], popular: true },
-    { name: "Annual", price: "720", per: "DT / year", feats: ["Full gym access", "4 PT sessions", "Nutrition plan", "All classes", "Priority booking"] },
+    { name: "1 Month", price: "60", per: "DT / month", feats: ["Fitness + Cardio access", "Locker room", "Free WiFi"] },
+    { name: "3 Months", price: "160", per: "DT / 3 months", feats: ["Fitness + Cardio access", "Locker room", "Free WiFi"] },
+    { name: "6 Months", price: "300", per: "DT / 6 months", feats: ["Fitness + Cardio access", "Locker room", "Free WiFi"], popular: true },
+    { name: "12 Months", price: "570", per: "DT / year", feats: ["Fitness + Cardio access", "Locker room", "Free WiFi", "Best value"] },
   ],
   address: "Avenue Habib Bourguiba",
   addressSub: "Beni Khiar 8060, Tunisia",
