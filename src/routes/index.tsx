@@ -143,6 +143,7 @@ function Home() {
 
 function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAdmin: boolean }) {
   const { t } = useI18n();
+  const [open, setOpen] = useState(false);
   const links: { key: string; label: string; href: string }[] = [
     { key: "about", label: t.navAbout, href: "#about" },
     { key: "programs", label: t.navPrograms, href: "#programs" },
@@ -150,48 +151,109 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     { key: "pricing", label: t.navPricing, href: "#pricing" },
     { key: "contact", label: t.navContact, href: "#contact" },
   ];
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
-      <div className="container-x flex items-center justify-between py-4">
-        <a href="#top" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-xl">Ω</div>
-          <div className="leading-tight">
-            <div className="font-display tracking-wider text-lg">{c.brandName}</div>
-            <div className="text-[10px] tracking-[0.25em] text-muted-foreground">{c.tagline}</div>
+      <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
+        <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-lg sm:text-xl">Ω</div>
+          <div className="leading-tight min-w-0">
+            <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
+            <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
           </div>
         </a>
-        <nav className="hidden md:flex items-center gap-8 text-sm">
+        <nav className="hidden lg:flex items-center gap-8 text-sm">
           {links.map((l) => (
             <a key={l.key} href={l.href} className="hover:text-primary transition">{l.label}</a>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher className="mr-1" />
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden sm:block"><LanguageSwitcher /></div>
           {signedIn ? (
             <>
-              <Link to="/account" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+              <Link to="/account" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
                 {t.myAccount}
               </Link>
               {isAdmin && (
-                <Link to="/admin" className="rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                <Link to="/admin" className="hidden md:inline-flex rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
                   {t.adminPanel}
                 </Link>
               )}
             </>
           ) : (
-            <Link to="/auth" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+            <Link to="/auth" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
               {t.signIn}
             </Link>
           )}
 
-          <a href="#pricing" className="rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+          <a href="#pricing" className="hidden sm:inline-flex rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
             {t.joinNow}
           </a>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="lg:hidden relative w-10 h-10 grid place-items-center rounded-md border border-border text-foreground hover:border-primary transition"
+          >
+            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "rotate-45" : "-translate-y-1.5"}`} />
+            <span className={`block w-5 h-0.5 bg-current absolute transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "-rotate-45" : "translate-y-1.5"}`} />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile drawer */}
+      <div
+        className={`lg:hidden overflow-hidden border-t border-border transition-[max-height] duration-300 ease-out ${open ? "max-h-[80vh]" : "max-h-0"}`}
+      >
+        <div className="container-x py-4 flex flex-col gap-2">
+          {links.map((l) => (
+            <a
+              key={l.key}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-2 text-sm font-semibold hover:bg-card hover:text-primary transition"
+            >
+              {l.label}
+            </a>
+          ))}
+          <div className="mt-2 pt-3 border-t border-border flex flex-wrap items-center gap-2">
+            <LanguageSwitcher />
+            {signedIn ? (
+              <>
+                <Link to="/account" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                  {t.myAccount}
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                    {t.adminPanel}
+                  </Link>
+                )}
+              </>
+            ) : (
+              <Link to="/auth" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                {t.signIn}
+              </Link>
+            )}
+            <a href="#pricing" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+              {t.joinNow}
+            </a>
+          </div>
         </div>
       </div>
     </header>
   );
 }
+
 
 function Hero({ c }: { c: SiteContent }) {
   const { t, dir } = useI18n();
