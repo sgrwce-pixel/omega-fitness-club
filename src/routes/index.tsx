@@ -412,23 +412,24 @@ function Facility() {
   const { t, dir } = useI18n();
   const arrow = dir === "rtl" ? "←" : "→";
   return (
-    <section id="facility" className="container-x py-24 lg:py-32">
-      <div className="text-center max-w-2xl mx-auto mb-12">
+    <section id="facility" className="container-x py-16 sm:py-24 lg:py-32">
+      <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.facilityKicker}</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.facilityHeadline1} <span className="text-primary">{t.facilityHeadline2}</span></h2>
+        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.facilityHeadline1} <span className="text-primary">{t.facilityHeadline2}</span></h2>
         <p className="mt-4 text-muted-foreground">{t.facilitySub}</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
-        <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
-          <div className="font-display text-3xl leading-none">{t.facilityCTA}</div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 sm:col-span-6 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+        <div className="col-span-12 sm:col-span-6 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between min-h-[160px]">
+          <div className="font-display text-2xl sm:text-3xl leading-none">{t.facilityCTA}</div>
           <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">{t.visitUsShort} <span className={`transition-transform ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span></a>
         </div>
 
       </div>
+
     </section>
   );
 }
