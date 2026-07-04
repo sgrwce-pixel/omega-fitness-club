@@ -437,16 +437,17 @@ function Facility() {
 function Pricing({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   return (
-    <section id="pricing" className="relative py-24 lg:py-32 border-y border-border bg-card">
+    <section id="pricing" className="relative py-16 sm:py-24 lg:py-32 border-y border-border bg-card">
       <div className="container-x">
-        <div className="text-center mb-14">
+        <div className="text-center mb-10 sm:mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.pricingKicker}</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.pricingHeadline}</h2>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.pricingHeadline}</h2>
           <p className="mt-3 text-muted-foreground text-sm">{t.pricingSub1} <span className="text-primary font-semibold">{t.insuranceFee}</span></p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {c.plans.map((p) => (
-            <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
+            <div key={p.name} className={`relative rounded-xl border p-6 sm:p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
+
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold tracking-widest px-3 py-1 rounded">
                   {t.mostPopular}
