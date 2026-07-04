@@ -455,7 +455,7 @@ function Pricing({ c }: { c: SiteContent }) {
               )}
               <div className="font-display text-2xl tracking-wider">{p.name.toUpperCase()}</div>
               <div className="mt-4 flex items-baseline gap-2">
-                <span className="font-display text-6xl text-primary">{p.price}</span>
+                <span className="font-display text-5xl sm:text-6xl text-primary">{p.price}</span>
                 <span className="text-muted-foreground text-sm">{p.per}</span>
               </div>
               <ul className="mt-6 space-y-3 text-sm">
