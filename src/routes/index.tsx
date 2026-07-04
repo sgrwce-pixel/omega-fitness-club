@@ -479,12 +479,13 @@ function Pricing({ c }: { c: SiteContent }) {
 function Reviews() {
   const { t } = useI18n();
   return (
-    <section className="container-x py-24 lg:py-32">
-      <div className="text-center mb-14">
+    <section className="container-x py-16 sm:py-24 lg:py-32">
+      <div className="text-center mb-10 sm:mb-14">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.reviewsKicker}</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.reviewsHeadline} <span className="text-primary">★</span></h2>
+        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.reviewsHeadline} <span className="text-primary">★</span></h2>
       </div>
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
+
         {t.reviews.map((r) => (
           <div key={r.n} className="rounded-lg border border-border bg-card p-6">
             <div className="text-primary mb-3">★★★★★</div>
