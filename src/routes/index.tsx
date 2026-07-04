@@ -382,15 +382,16 @@ function Programs({ c }: { c: SiteContent }) {
   const { t, dir } = useI18n();
   const arrow = dir === "rtl" ? "←" : "→";
   return (
-    <section id="programs" className="bg-card border-y border-border py-24">
+    <section id="programs" className="bg-card border-y border-border py-16 sm:py-24">
       <div className="container-x">
-        <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
+        <div className="flex flex-wrap items-end justify-between gap-6 mb-10 sm:mb-12">
           <div>
             <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.programsKicker}</div>
-            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.programsHeadline}</h2>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.programsHeadline}</h2>
           </div>
           <p className="max-w-md text-muted-foreground">{t.programsSub}</p>
         </div>
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {c.programs.map((p, i) => (
             <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition wobble-on-hover" data-inview>
