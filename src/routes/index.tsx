@@ -590,8 +590,9 @@ function Contact({ c }: { c: SiteContent }) {
 function Footer({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-border py-10">
-      <div className="container-x flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+    <footer className="border-t border-border py-8 sm:py-10">
+      <div className="container-x flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-4 text-sm text-muted-foreground text-center sm:text-left">
+
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
           <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
