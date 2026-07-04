@@ -335,20 +335,20 @@ function About({ c }: { c: SiteContent }) {
     [t.featCommT, t.featCommD],
   ];
   return (
-    <section id="about" className="container-x py-24 lg:py-32">
-      <div className="grid lg:grid-cols-2 gap-16 items-center">
+    <section id="about" className="container-x py-16 sm:py-24 lg:py-32">
+      <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
         <div className="relative">
           <div className="img-zoom rounded-lg overflow-hidden">
-            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
+            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover" />
           </div>
-          <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-5 max-w-[220px] shadow-2xl">
+          <div className="absolute -bottom-6 -left-2 sm:-left-6 bg-card border border-border rounded-lg p-4 sm:p-5 max-w-[200px] sm:max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">{t.est}</div>
-            <div className="font-display text-xl mt-1">{t.newEra}</div>
+            <div className="font-display text-lg sm:text-xl mt-1">{t.newEra}</div>
           </div>
         </div>
         <div>
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.aboutKicker} {c.brandName}</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover" data-inview="once">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover" data-inview="once">
             {t.aboutHeadline1}<br />
             <span className="text-primary">{t.aboutHeadline2}</span>
           </h2>
@@ -362,7 +362,7 @@ function About({ c }: { c: SiteContent }) {
               </div>
             ))}
           </div>
-          <div className="mt-10 grid grid-cols-4 gap-4">
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {stats.map((s) => (
               <div key={s.l}>
                 <StatNumber value={s.n} />
@@ -370,6 +370,7 @@ function About({ c }: { c: SiteContent }) {
               </div>
             ))}
           </div>
+
 
         </div>
       </div>
