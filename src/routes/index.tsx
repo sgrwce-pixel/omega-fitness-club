@@ -528,17 +528,18 @@ function Contact({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   const mapSrc = buildMapSrc(c.mapQuery);
   return (
-    <section id="contact" className="relative py-24 lg:py-32 overflow-hidden border-t border-border">
+    <section id="contact" className="relative py-16 sm:py-24 lg:py-32 overflow-hidden border-t border-border">
       <div className="container-x">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.visitUs}</div>
-          <h2 className="font-display text-5xl md:text-7xl mt-3 leading-none">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl mt-3 leading-none">
             {t.readyToStart1} <span className="text-primary">{t.readyToStart2}</span>
           </h2>
           <p className="mt-6 text-muted-foreground">{t.visitSub}</p>
         </div>
         <div className="grid lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-border bg-card h-[440px]">
+          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-border bg-card h-[320px] sm:h-[400px] lg:h-[440px]">
+
             <iframe
               title="Omega Fitness location"
               src={mapSrc}
