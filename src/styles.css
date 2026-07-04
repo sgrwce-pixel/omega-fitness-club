@@ -78,8 +78,12 @@
 @utility container-x {
   margin-inline: auto;
   max-width: 80rem;
-  padding-inline: 1.5rem;
+  padding-inline: 1rem;
 }
+@media (min-width: 640px) {
+  .container-x { padding-inline: 1.5rem; }
+}
+
 
 @utility text-stroke {
   -webkit-text-stroke: 2px var(--neon);

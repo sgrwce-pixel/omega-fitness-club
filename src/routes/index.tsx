@@ -143,6 +143,7 @@ function Home() {
 
 function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAdmin: boolean }) {
   const { t } = useI18n();
+  const [open, setOpen] = useState(false);
   const links: { key: string; label: string; href: string }[] = [
     { key: "about", label: t.navAbout, href: "#about" },
     { key: "programs", label: t.navPrograms, href: "#programs" },
@@ -150,48 +151,109 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     { key: "pricing", label: t.navPricing, href: "#pricing" },
     { key: "contact", label: t.navContact, href: "#contact" },
   ];
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
-      <div className="container-x flex items-center justify-between py-4">
-        <a href="#top" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-xl">Ω</div>
-          <div className="leading-tight">
-            <div className="font-display tracking-wider text-lg">{c.brandName}</div>
-            <div className="text-[10px] tracking-[0.25em] text-muted-foreground">{c.tagline}</div>
+      <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
+        <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-lg sm:text-xl">Ω</div>
+          <div className="leading-tight min-w-0">
+            <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
+            <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
           </div>
         </a>
-        <nav className="hidden md:flex items-center gap-8 text-sm">
+        <nav className="hidden lg:flex items-center gap-8 text-sm">
           {links.map((l) => (
             <a key={l.key} href={l.href} className="hover:text-primary transition">{l.label}</a>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher className="mr-1" />
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden sm:block"><LanguageSwitcher /></div>
           {signedIn ? (
             <>
-              <Link to="/account" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+              <Link to="/account" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
                 {t.myAccount}
               </Link>
               {isAdmin && (
-                <Link to="/admin" className="rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                <Link to="/admin" className="hidden md:inline-flex rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
                   {t.adminPanel}
                 </Link>
               )}
             </>
           ) : (
-            <Link to="/auth" className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+            <Link to="/auth" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
               {t.signIn}
             </Link>
           )}
 
-          <a href="#pricing" className="rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+          <a href="#pricing" className="hidden sm:inline-flex rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
             {t.joinNow}
           </a>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="lg:hidden relative w-10 h-10 grid place-items-center rounded-md border border-border text-foreground hover:border-primary transition"
+          >
+            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "rotate-45" : "-translate-y-1.5"}`} />
+            <span className={`block w-5 h-0.5 bg-current absolute transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "-rotate-45" : "translate-y-1.5"}`} />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile drawer */}
+      <div
+        className={`lg:hidden overflow-hidden border-t border-border transition-[max-height] duration-300 ease-out ${open ? "max-h-[80vh]" : "max-h-0"}`}
+      >
+        <div className="container-x py-4 flex flex-col gap-2">
+          {links.map((l) => (
+            <a
+              key={l.key}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-2 text-sm font-semibold hover:bg-card hover:text-primary transition"
+            >
+              {l.label}
+            </a>
+          ))}
+          <div className="mt-2 pt-3 border-t border-border flex flex-wrap items-center gap-2">
+            <LanguageSwitcher />
+            {signedIn ? (
+              <>
+                <Link to="/account" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                  {t.myAccount}
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                    {t.adminPanel}
+                  </Link>
+                )}
+              </>
+            ) : (
+              <Link to="/auth" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                {t.signIn}
+              </Link>
+            )}
+            <a href="#pricing" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+              {t.joinNow}
+            </a>
+          </div>
         </div>
       </div>
     </header>
   );
 }
+
 
 function Hero({ c }: { c: SiteContent }) {
   const { t, dir } = useI18n();
@@ -203,23 +265,23 @@ function Hero({ c }: { c: SiteContent }) {
         <img src={dontGiveUp.url} alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
         <div className={`absolute inset-0 ${dir === "rtl" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-background via-background/85 to-background/30`} />
       </div>
-      <div className="container-x grid lg:grid-cols-2 gap-12 py-28 lg:py-40 items-center">
+      <div className="container-x grid lg:grid-cols-2 gap-12 py-20 sm:py-28 lg:py-40 items-center">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-4 py-1.5 text-xs tracking-[0.25em] text-primary">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             {c.locationBadge}
           </span>
-          <h1 className="font-display mt-6 text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight">
+          <h1 className="font-display mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight">
             {parts[0]}
             <span className="text-primary" style={{ textShadow: "0 0 40px rgba(138,255,60,0.4)" }}>{c.heroHighlight}</span>
             {parts[1] ?? ""}
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine btn-3d">
+          <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
+          <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-5 sm:px-6 py-3 font-bold btn-shine btn-3d">
               {t.startTraining} <span className={`transition ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span>
             </a>
-            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine btn-3d-dark">
+            <a href="#facility" className="rounded-md border border-border bg-card px-5 sm:px-6 py-3 font-semibold hover:border-primary transition btn-shine btn-3d-dark">
               {t.tourTheGym}
             </a>
           </div>
@@ -239,6 +301,7 @@ function Hero({ c }: { c: SiteContent }) {
 
         </div>
       </div>
+
     </section>
   );
 }
@@ -272,20 +335,20 @@ function About({ c }: { c: SiteContent }) {
     [t.featCommT, t.featCommD],
   ];
   return (
-    <section id="about" className="container-x py-24 lg:py-32">
-      <div className="grid lg:grid-cols-2 gap-16 items-center">
+    <section id="about" className="container-x py-16 sm:py-24 lg:py-32">
+      <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
         <div className="relative">
           <div className="img-zoom rounded-lg overflow-hidden">
-            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[520px] object-cover" />
+            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover" />
           </div>
-          <div className="absolute -bottom-6 -left-6 bg-card border border-border rounded-lg p-5 max-w-[220px] shadow-2xl">
+          <div className="absolute -bottom-6 -left-2 sm:-left-6 bg-card border border-border rounded-lg p-4 sm:p-5 max-w-[200px] sm:max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">{t.est}</div>
-            <div className="font-display text-xl mt-1">{t.newEra}</div>
+            <div className="font-display text-lg sm:text-xl mt-1">{t.newEra}</div>
           </div>
         </div>
         <div>
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.aboutKicker} {c.brandName}</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover" data-inview="once">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 leading-none text-jiggle-hover" data-inview="once">
             {t.aboutHeadline1}<br />
             <span className="text-primary">{t.aboutHeadline2}</span>
           </h2>
@@ -299,7 +362,7 @@ function About({ c }: { c: SiteContent }) {
               </div>
             ))}
           </div>
-          <div className="mt-10 grid grid-cols-4 gap-4">
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {stats.map((s) => (
               <div key={s.l}>
                 <StatNumber value={s.n} />
@@ -307,6 +370,7 @@ function About({ c }: { c: SiteContent }) {
               </div>
             ))}
           </div>
+
 
         </div>
       </div>
@@ -318,15 +382,16 @@ function Programs({ c }: { c: SiteContent }) {
   const { t, dir } = useI18n();
   const arrow = dir === "rtl" ? "←" : "→";
   return (
-    <section id="programs" className="bg-card border-y border-border py-24">
+    <section id="programs" className="bg-card border-y border-border py-16 sm:py-24">
       <div className="container-x">
-        <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
+        <div className="flex flex-wrap items-end justify-between gap-6 mb-10 sm:mb-12">
           <div>
             <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.programsKicker}</div>
-            <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.programsHeadline}</h2>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.programsHeadline}</h2>
           </div>
           <p className="max-w-md text-muted-foreground">{t.programsSub}</p>
         </div>
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {c.programs.map((p, i) => (
             <div key={p.title + i} className="group relative overflow-hidden rounded-lg border border-border bg-background p-6 hover:border-primary transition wobble-on-hover" data-inview>
@@ -347,23 +412,24 @@ function Facility() {
   const { t, dir } = useI18n();
   const arrow = dir === "rtl" ? "←" : "→";
   return (
-    <section id="facility" className="container-x py-24 lg:py-32">
-      <div className="text-center max-w-2xl mx-auto mb-12">
+    <section id="facility" className="container-x py-16 sm:py-24 lg:py-32">
+      <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.facilityKicker}</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.facilityHeadline1} <span className="text-primary">{t.facilityHeadline2}</span></h2>
+        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.facilityHeadline1} <span className="text-primary">{t.facilityHeadline2}</span></h2>
         <p className="mt-4 text-muted-foreground">{t.facilitySub}</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[320px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[320px] w-full object-cover" /></div>
-        <div className="col-span-12 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between">
-          <div className="font-display text-3xl leading-none">{t.facilityCTA}</div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 sm:col-span-6 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+        <div className="col-span-12 sm:col-span-6 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between min-h-[160px]">
+          <div className="font-display text-2xl sm:text-3xl leading-none">{t.facilityCTA}</div>
           <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">{t.visitUsShort} <span className={`transition-transform ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span></a>
         </div>
 
       </div>
+
     </section>
   );
 }
@@ -371,16 +437,17 @@ function Facility() {
 function Pricing({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   return (
-    <section id="pricing" className="relative py-24 lg:py-32 border-y border-border bg-card">
+    <section id="pricing" className="relative py-16 sm:py-24 lg:py-32 border-y border-border bg-card">
       <div className="container-x">
-        <div className="text-center mb-14">
+        <div className="text-center mb-10 sm:mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.pricingKicker}</div>
-          <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.pricingHeadline}</h2>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.pricingHeadline}</h2>
           <p className="mt-3 text-muted-foreground text-sm">{t.pricingSub1} <span className="text-primary font-semibold">{t.insuranceFee}</span></p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           {c.plans.map((p) => (
-            <div key={p.name} className={`relative rounded-xl border p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
+            <div key={p.name} className={`relative rounded-xl border p-6 sm:p-8 ${p.popular ? "border-primary bg-background neon-glow breathe" : "border-border bg-background"}`}>
+
               {p.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold tracking-widest px-3 py-1 rounded">
                   {t.mostPopular}
@@ -388,7 +455,7 @@ function Pricing({ c }: { c: SiteContent }) {
               )}
               <div className="font-display text-2xl tracking-wider">{p.name.toUpperCase()}</div>
               <div className="mt-4 flex items-baseline gap-2">
-                <span className="font-display text-6xl text-primary">{p.price}</span>
+                <span className="font-display text-5xl sm:text-6xl text-primary">{p.price}</span>
                 <span className="text-muted-foreground text-sm">{p.per}</span>
               </div>
               <ul className="mt-6 space-y-3 text-sm">
@@ -412,12 +479,13 @@ function Pricing({ c }: { c: SiteContent }) {
 function Reviews() {
   const { t } = useI18n();
   return (
-    <section className="container-x py-24 lg:py-32">
-      <div className="text-center mb-14">
+    <section className="container-x py-16 sm:py-24 lg:py-32">
+      <div className="text-center mb-10 sm:mb-14">
         <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.reviewsKicker}</div>
-        <h2 className="font-display text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.reviewsHeadline} <span className="text-primary">★</span></h2>
+        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-3 text-jiggle-hover" data-inview="once">{t.reviewsHeadline} <span className="text-primary">★</span></h2>
       </div>
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
+
         {t.reviews.map((r) => (
           <div key={r.n} className="rounded-lg border border-border bg-card p-6">
             <div className="text-primary mb-3">★★★★★</div>
@@ -460,17 +528,18 @@ function Contact({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   const mapSrc = buildMapSrc(c.mapQuery);
   return (
-    <section id="contact" className="relative py-24 lg:py-32 overflow-hidden border-t border-border">
+    <section id="contact" className="relative py-16 sm:py-24 lg:py-32 overflow-hidden border-t border-border">
       <div className="container-x">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <div className="text-primary text-xs tracking-[0.3em] font-semibold">{t.visitUs}</div>
-          <h2 className="font-display text-5xl md:text-7xl mt-3 leading-none">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl mt-3 leading-none">
             {t.readyToStart1} <span className="text-primary">{t.readyToStart2}</span>
           </h2>
           <p className="mt-6 text-muted-foreground">{t.visitSub}</p>
         </div>
         <div className="grid lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-border bg-card h-[440px]">
+          <div className="lg:col-span-3 rounded-xl overflow-hidden border border-border bg-card h-[320px] sm:h-[400px] lg:h-[440px]">
+
             <iframe
               title="Omega Fitness location"
               src={mapSrc}
@@ -521,8 +590,9 @@ function Contact({ c }: { c: SiteContent }) {
 function Footer({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-border py-10">
-      <div className="container-x flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+    <footer className="border-t border-border py-8 sm:py-10">
+      <div className="container-x flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-4 text-sm text-muted-foreground text-center sm:text-left">
+
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
           <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
