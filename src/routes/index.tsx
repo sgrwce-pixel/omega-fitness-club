@@ -265,23 +265,23 @@ function Hero({ c }: { c: SiteContent }) {
         <img src={dontGiveUp.url} alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
         <div className={`absolute inset-0 ${dir === "rtl" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-background via-background/85 to-background/30`} />
       </div>
-      <div className="container-x grid lg:grid-cols-2 gap-12 py-28 lg:py-40 items-center">
+      <div className="container-x grid lg:grid-cols-2 gap-12 py-20 sm:py-28 lg:py-40 items-center">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-4 py-1.5 text-xs tracking-[0.25em] text-primary">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             {c.locationBadge}
           </span>
-          <h1 className="font-display mt-6 text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight">
+          <h1 className="font-display mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight">
             {parts[0]}
             <span className="text-primary" style={{ textShadow: "0 0 40px rgba(138,255,60,0.4)" }}>{c.heroHighlight}</span>
             {parts[1] ?? ""}
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-6 py-3 font-bold btn-shine btn-3d">
+          <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl">{c.heroDescription}</p>
+          <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+            <a href="#pricing" className="group inline-flex items-center gap-2 rounded-md bg-primary text-primary-foreground px-5 sm:px-6 py-3 font-bold btn-shine btn-3d">
               {t.startTraining} <span className={`transition ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span>
             </a>
-            <a href="#facility" className="rounded-md border border-border bg-card px-6 py-3 font-semibold hover:border-primary transition btn-shine btn-3d-dark">
+            <a href="#facility" className="rounded-md border border-border bg-card px-5 sm:px-6 py-3 font-semibold hover:border-primary transition btn-shine btn-3d-dark">
               {t.tourTheGym}
             </a>
           </div>
@@ -301,6 +301,7 @@ function Hero({ c }: { c: SiteContent }) {
 
         </div>
       </div>
+
     </section>
   );
 }
