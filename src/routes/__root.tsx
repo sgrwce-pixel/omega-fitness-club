@@ -115,9 +115,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "HealthClub",
-          name: "Omega Fitness",
+          name: "Omega Fitness Club",
           description: "Premium gym in Beni Khiar, Tunisia offering strength training, cardio, group classes and personal coaching.",
           url: "https://omega-fitness-club.lovable.app",
+          image: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/696b9951-eebc-4aae-a970-3759d5ca3373/og-cover.jpg",
           telephone: "+216 20 084 304",
           address: {
             "@type": "PostalAddress",
