@@ -23,6 +23,7 @@ function StatNumber({ value }: { value: string }) {
 }
 
 import dontGiveUp from "@/assets/dont-give-up.png.asset.json";
+import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 import dumbbells from "@/assets/dumbbells.png.asset.json";
 import stayStrong from "@/assets/stay-strong.png.asset.json";
 import stronger from "@/assets/stronger.png.asset.json";
