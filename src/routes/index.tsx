@@ -23,6 +23,7 @@ function StatNumber({ value }: { value: string }) {
 }
 
 import dontGiveUp from "@/assets/dont-give-up.png.asset.json";
+import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 import dumbbells from "@/assets/dumbbells.png.asset.json";
 import stayStrong from "@/assets/stay-strong.png.asset.json";
 import stronger from "@/assets/stronger.png.asset.json";
@@ -163,12 +164,13 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
         <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-lg sm:text-xl">Ω</div>
+          <img src={omegaLogo.url} alt={`${c.brandName} logo`} className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-cover" />
           <div className="leading-tight min-w-0">
             <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
             <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
           </div>
         </a>
+
         <nav className="hidden lg:flex items-center gap-8 text-sm">
           {links.map((l) => (
             <a key={l.key} href={l.href} className="hover:text-primary transition">{l.label}</a>
