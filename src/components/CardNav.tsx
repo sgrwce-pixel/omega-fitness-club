@@ -58,11 +58,13 @@ export default function CardNav({
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 h-16 gap-4">
           <a href="/" className="flex items-center gap-2 min-w-0">
-            <img
-              src={omegaLogo.url}
-              alt="Omega Fitness logo"
-              className="h-9 w-9 rounded-md object-cover"
-            />
+            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
+              <img
+                src={omegaLogo.url}
+                alt="Omega Fitness logo"
+                className="h-full w-full object-contain"
+              />
+            </div>
             <span className="font-semibold tracking-wide text-sm text-foreground hidden sm:inline">
               OMEGA FITNESS
             </span>
