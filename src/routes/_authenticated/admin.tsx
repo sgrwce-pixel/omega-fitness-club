@@ -107,7 +107,9 @@ function Admin() {
       <header className="border-b border-border bg-card">
         <div className="container-x flex items-center justify-between py-4">
           <Link to="/" className="flex items-center gap-3">
-            <img src={omegaLogo.url} alt="Omega Fitness logo" className="w-9 h-9 rounded-md object-cover" />
+            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
+              <img src={omegaLogo.url} alt="Omega Fitness logo" className="h-full w-full object-contain" />
+            </div>
             <div>
               <div className="font-display tracking-wider">OMEGA FITNESS</div>
               <div className="text-[10px] tracking-widest text-primary">ADMIN PANEL</div>
