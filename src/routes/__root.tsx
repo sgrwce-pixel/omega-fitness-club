@@ -120,6 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           description: "Premium gym in Beni Khiar, Tunisia offering strength training, cardio, group classes and personal coaching.",
           url: "https://omega-fitness-club.lovable.app",
           image: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/696b9951-eebc-4aae-a970-3759d5ca3373/og-cover.jpg",
+          logo: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/2bb8940e-78f6-4594-8570-8f495a1d40d6/omega-logo.jpg",
           telephone: "+216 20 084 304",
           address: {
             "@type": "PostalAddress",
