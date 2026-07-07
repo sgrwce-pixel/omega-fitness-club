@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
 export type CardNavLink = {
   label: string;
