@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-ro
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
+import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin — Omega Fitness" }] }),
@@ -106,7 +107,7 @@ function Admin() {
       <header className="border-b border-border bg-card">
         <div className="container-x flex items-center justify-between py-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-md bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
+            <img src={omegaLogo.url} alt="Omega Fitness logo" className="w-9 h-9 rounded-md object-cover" />
             <div>
               <div className="font-display tracking-wider">OMEGA FITNESS</div>
               <div className="text-[10px] tracking-widest text-primary">ADMIN PANEL</div>

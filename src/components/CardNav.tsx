@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
 export type CardNavLink = {
   label: string;
@@ -57,12 +58,11 @@ export default function CardNav({
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 h-16 gap-4">
           <a href="/" className="flex items-center gap-2 min-w-0">
-            <span
-              className="font-display text-2xl text-primary leading-none"
-              style={{ textShadow: "0 0 24px rgba(138,255,60,0.5)" }}
-            >
-              Ω
-            </span>
+            <img
+              src={omegaLogo.url}
+              alt="Omega Fitness logo"
+              className="h-9 w-9 rounded-md object-cover"
+            />
             <span className="font-semibold tracking-wide text-sm text-foreground hidden sm:inline">
               OMEGA FITNESS
             </span>
