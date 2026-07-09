@@ -84,7 +84,9 @@ function Account() {
       <header className="border-b border-border">
         <div className="container-x flex items-center justify-between py-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-md bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
+            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
+              <img src={omegaLogo.url} alt="Omega Fitness logo" className="h-full w-full object-contain" />
+            </div>
             <div className="font-display tracking-wider">OMEGA FITNESS</div>
           </Link>
           <div className="flex items-center gap-3">
