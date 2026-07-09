@@ -151,6 +151,7 @@ function Home() {
 function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAdmin: boolean }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const links: { key: string; label: string; href: string }[] = [
     { key: "about", label: t.navAbout, href: "#about" },
     { key: "programs", label: t.navPrograms, href: "#programs" },
@@ -160,49 +161,89 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
   ];
 
   useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
-      <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
-        <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <img src={omegaLogo.url} alt={`${c.brandName} logo`} className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-cover" />
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-background/85 backdrop-blur-xl border-b border-border shadow-[0_8px_30px_-15px_rgba(0,0,0,0.6)]"
+          : "bg-background/40 backdrop-blur-md border-b border-transparent"
+      }`}
+    >
+      <div className={`container-x flex items-center justify-between gap-3 transition-all duration-300 ${scrolled ? "py-2.5" : "py-3 sm:py-4"}`}>
+        <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0 group">
+          <div className="relative shrink-0">
+            <div className="absolute inset-0 rounded-xl bg-primary/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <img
+              src={omegaLogo.url}
+              alt={`${c.brandName} logo`}
+              className={`relative rounded-xl object-cover border border-primary/20 bg-card p-0.5 transition-all duration-300 ${scrolled ? "w-9 h-9" : "w-10 h-10 sm:w-11 sm:h-11"}`}
+            />
+          </div>
           <div className="leading-tight min-w-0">
-            <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
-            <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
+            <div className="font-display font-black tracking-[0.18em] text-base sm:text-lg truncate">
+              {c.brandName}
+            </div>
+            <div className="text-[10px] tracking-[0.28em] text-primary/80 truncate hidden sm:block">
+              {c.tagline}
+            </div>
           </div>
         </a>
 
-        <nav className="hidden lg:flex items-center gap-8 text-sm">
+        <nav className="hidden lg:flex items-center gap-1 text-sm">
           {links.map((l) => (
-            <a key={l.key} href={l.href} className="hover:text-primary transition">{l.label}</a>
+            <a
+              key={l.key}
+              href={l.href}
+              className="relative px-3 py-2 font-medium text-foreground/80 hover:text-foreground transition-colors group"
+            >
+              <span>{l.label}</span>
+              <span className="pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-primary to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
+            </a>
           ))}
         </nav>
+
         <div className="flex items-center gap-2 shrink-0">
           <div className="hidden sm:block"><LanguageSwitcher /></div>
           {signedIn ? (
             <>
-              <Link to="/account" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+              <Link to="/account" className="hidden sm:inline-flex rounded-full border border-border/70 px-3.5 py-1.5 text-xs font-semibold tracking-wide hover:border-primary hover:text-primary transition">
                 {t.myAccount}
               </Link>
               {isAdmin && (
-                <Link to="/admin" className="hidden md:inline-flex rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                <Link to="/admin" className="hidden md:inline-flex rounded-full border border-primary/60 bg-primary/10 text-primary px-3.5 py-1.5 text-xs font-semibold tracking-wide hover:bg-primary/20 transition">
                   {t.adminPanel}
                 </Link>
               )}
             </>
           ) : (
-            <Link to="/auth" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+            <Link to="/auth" className="hidden sm:inline-flex rounded-full border border-border/70 px-3.5 py-1.5 text-xs font-semibold tracking-wide hover:border-primary hover:text-primary transition">
               {t.signIn}
             </Link>
           )}
 
-          <a href="#pricing" className="hidden sm:inline-flex rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+          <a
+            href="#pricing"
+            className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary text-primary-foreground px-4 py-1.5 font-bold text-xs tracking-wider uppercase shadow-[0_6px_20px_-8px_rgba(132,204,22,0.7)] hover:shadow-[0_10px_25px_-6px_rgba(132,204,22,0.85)] hover:-translate-y-0.5 transition-all duration-200"
+          >
             {t.joinNow}
+            <span aria-hidden>→</span>
           </a>
 
           <button
@@ -210,50 +251,60 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="lg:hidden relative w-10 h-10 grid place-items-center rounded-md border border-border text-foreground hover:border-primary transition"
+            className="lg:hidden relative w-10 h-10 grid place-items-center rounded-full border border-border/70 text-foreground hover:border-primary transition"
           >
-            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "rotate-45" : "-translate-y-1.5"}`} />
-            <span className={`block w-5 h-0.5 bg-current absolute transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
-            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "-rotate-45" : "translate-y-1.5"}`} />
+            <span className={`block w-4 h-0.5 bg-current absolute transition-all duration-300 ${open ? "rotate-45" : "-translate-y-1.5"}`} />
+            <span className={`block w-4 h-0.5 bg-current absolute transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+            <span className={`block w-4 h-0.5 bg-current absolute transition-all duration-300 ${open ? "-rotate-45" : "translate-y-1.5"}`} />
           </button>
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile slide-in menu */}
       <div
-        className={`lg:hidden overflow-hidden border-t border-border transition-[max-height] duration-300 ease-out ${open ? "max-h-[80vh]" : "max-h-0"}`}
+        aria-hidden={!open}
+        onClick={() => setOpen(false)}
+        className={`lg:hidden fixed inset-0 top-[60px] z-40 bg-background/60 backdrop-blur-sm transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      />
+      <div
+        className={`lg:hidden fixed top-[60px] bottom-0 z-50 w-[86%] max-w-sm bg-background/95 backdrop-blur-xl border-s border-border shadow-2xl transition-transform duration-300 ease-out ltr:right-0 rtl:left-0 ${
+          open ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"
+        }`}
       >
-        <div className="container-x py-4 flex flex-col gap-2">
-          {links.map((l) => (
+        <div className="h-full overflow-y-auto p-5 flex flex-col gap-1">
+          {links.map((l, i) => (
             <a
               key={l.key}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-2 text-sm font-semibold hover:bg-card hover:text-primary transition"
+              style={{ transitionDelay: open ? `${i * 40 + 80}ms` : "0ms" }}
+              className={`rounded-xl px-4 py-3 text-base font-semibold tracking-wide border-b border-border/40 hover:text-primary hover:bg-primary/5 transition-all ${
+                open ? "opacity-100 translate-x-0" : "opacity-0 ltr:translate-x-4 rtl:-translate-x-4"
+              }`}
             >
               {l.label}
             </a>
           ))}
-          <div className="mt-2 pt-3 border-t border-border flex flex-wrap items-center gap-2">
+          <div className="mt-5 pt-4 border-t border-border flex flex-col gap-2">
             <LanguageSwitcher />
             {signedIn ? (
               <>
-                <Link to="/account" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                <Link to="/account" onClick={() => setOpen(false)} className="text-center rounded-full border border-border px-4 py-2.5 text-sm font-semibold hover:border-primary hover:text-primary transition">
                   {t.myAccount}
                 </Link>
                 {isAdmin && (
-                  <Link to="/admin" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                  <Link to="/admin" onClick={() => setOpen(false)} className="text-center rounded-full border border-primary/60 bg-primary/10 text-primary px-4 py-2.5 text-sm font-semibold hover:bg-primary/20 transition">
                     {t.adminPanel}
                   </Link>
                 )}
               </>
             ) : (
-              <Link to="/auth" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+              <Link to="/auth" onClick={() => setOpen(false)} className="text-center rounded-full border border-border px-4 py-2.5 text-sm font-semibold hover:border-primary hover:text-primary transition">
                 {t.signIn}
               </Link>
             )}
-            <a href="#pricing" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
-              {t.joinNow}
+            <a href="#pricing" onClick={() => setOpen(false)} className="text-center rounded-full bg-primary text-primary-foreground px-4 py-2.5 font-bold text-sm tracking-wider uppercase shadow-[0_8px_20px_-8px_rgba(132,204,22,0.7)]">
+              {t.joinNow} →
             </a>
           </div>
         </div>
@@ -261,6 +312,8 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     </header>
   );
 }
+
+
 
 
 function Hero({ c }: { c: SiteContent }) {
