@@ -22,12 +22,20 @@ function StatNumber({ value }: { value: string }) {
   return <div ref={ref} className="font-display text-3xl md:text-4xl text-primary inline-block">{value}</div>;
 }
 
-import dontGiveUp from "@/assets/dont-give-up.png.asset.json";
-import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
-import dumbbells from "@/assets/dumbbells.png.asset.json";
-import stayStrong from "@/assets/stay-strong.png.asset.json";
-import stronger from "@/assets/stronger.png.asset.json";
-import cableMachine from "@/assets/cable-machine.png.asset.json";
+import dontGiveUp480 from "@/assets/dont-give-up-480.webp.asset.json";
+import dontGiveUp900 from "@/assets/dont-give-up-900.webp.asset.json";
+import omegaLogo96 from "@/assets/omega-logo-96.webp.asset.json";
+import dumbbells480 from "@/assets/dumbbells-480.webp.asset.json";
+import dumbbells900 from "@/assets/dumbbells-900.webp.asset.json";
+import stayStrong480 from "@/assets/stay-strong-480.webp.asset.json";
+import stayStrong900 from "@/assets/stay-strong-900.webp.asset.json";
+import stronger480 from "@/assets/stronger-480.webp.asset.json";
+import stronger900 from "@/assets/stronger-900.webp.asset.json";
+import cableMachine480 from "@/assets/cable-machine-480.webp.asset.json";
+import cableMachine900 from "@/assets/cable-machine-900.webp.asset.json";
+
+const srcSet = (a: { url: string }, b: { url: string }) =>
+  `${a.url} 480w, ${b.url} 900w`;
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
 import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
