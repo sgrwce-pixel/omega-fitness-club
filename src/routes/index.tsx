@@ -278,7 +278,7 @@ function Hero({ c }: { c: SiteContent }) {
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <img src={dontGiveUp.url} alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
+        <img src={dontGiveUp900.url} srcSet={srcSet(dontGiveUp480, dontGiveUp900)} sizes="100vw" width="900" height="497" fetchPriority="high" alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
         <div className={`absolute inset-0 ${dir === "rtl" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-background via-background/85 to-background/30`} />
       </div>
       <div className="container-x grid lg:grid-cols-2 gap-12 py-20 sm:py-28 lg:py-40 items-center">
