@@ -64,7 +64,6 @@ export const Route = createFileRoute("/")({
       { name: "twitter:description", content: "Premium gym in Beni Khiar with strength, cardio, coaching and group classes." },
       { name: "twitter:image", content: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/696b9951-eebc-4aae-a970-3759d5ca3373/og-cover.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://omega-fitness-club.lovable.app" }],
     scripts: [
       {
         type: "application/ld+json",
