@@ -42,6 +42,9 @@ import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [
+      { rel: "preload", as: "image", href: dontGiveUp900.url, imageSrcSet: srcSet(dontGiveUp480, dontGiveUp900), imageSizes: "100vw", fetchpriority: "high" } as any,
+    ],
     meta: [
       { title: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
       { name: "description", content: "Omega Fitness Club in Beni Khiar, Tunisia — premium strength & cardio equipment, expert coaches, group classes and personal training. Open daily until 11pm." },
