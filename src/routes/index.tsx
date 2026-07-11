@@ -43,6 +43,7 @@ import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     links: [
+      { rel: "canonical", href: "https://omega-fitness-club.lovable.app" },
       { rel: "preload", as: "image", href: dontGiveUp900.url, imageSrcSet: srcSet(dontGiveUp480, dontGiveUp900), imageSizes: "100vw", fetchpriority: "high" } as any,
     ],
     meta: [
