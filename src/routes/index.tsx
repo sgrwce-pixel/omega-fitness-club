@@ -22,18 +22,30 @@ function StatNumber({ value }: { value: string }) {
   return <div ref={ref} className="font-display text-3xl md:text-4xl text-primary inline-block">{value}</div>;
 }
 
-import dontGiveUp from "@/assets/dont-give-up.png.asset.json";
-import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
-import dumbbells from "@/assets/dumbbells.png.asset.json";
-import stayStrong from "@/assets/stay-strong.png.asset.json";
-import stronger from "@/assets/stronger.png.asset.json";
-import cableMachine from "@/assets/cable-machine.png.asset.json";
+import dontGiveUp480 from "@/assets/dont-give-up-480.webp.asset.json";
+import dontGiveUp900 from "@/assets/dont-give-up-900.webp.asset.json";
+import omegaLogo96 from "@/assets/omega-logo-96.webp.asset.json";
+import dumbbells480 from "@/assets/dumbbells-480.webp.asset.json";
+import dumbbells900 from "@/assets/dumbbells-900.webp.asset.json";
+import stayStrong480 from "@/assets/stay-strong-480.webp.asset.json";
+import stayStrong900 from "@/assets/stay-strong-900.webp.asset.json";
+import stronger480 from "@/assets/stronger-480.webp.asset.json";
+import stronger900 from "@/assets/stronger-900.webp.asset.json";
+import cableMachine480 from "@/assets/cable-machine-480.webp.asset.json";
+import cableMachine900 from "@/assets/cable-machine-900.webp.asset.json";
+
+const srcSet = (a: { url: string }, b: { url: string }) =>
+  `${a.url} 480w, ${b.url} 900w`;
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
 import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [
+      { rel: "canonical", href: "https://omega-fitness-club.lovable.app" },
+      { rel: "preload", as: "image", href: dontGiveUp900.url, imageSrcSet: srcSet(dontGiveUp480, dontGiveUp900), imageSizes: "100vw", fetchpriority: "high" } as any,
+    ],
     meta: [
       { title: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
       { name: "description", content: "Omega Fitness Club in Beni Khiar, Tunisia — premium strength & cardio equipment, expert coaches, group classes and personal training. Open daily until 11pm." },
@@ -52,7 +64,6 @@ export const Route = createFileRoute("/")({
       { name: "twitter:description", content: "Premium gym in Beni Khiar with strength, cardio, coaching and group classes." },
       { name: "twitter:image", content: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/696b9951-eebc-4aae-a970-3759d5ca3373/og-cover.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://omega-fitness-club.lovable.app" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -170,7 +181,7 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
         <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <img src={omegaLogo.url} alt={`${c.brandName} logo`} className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-cover" />
+          <img src={omegaLogo96.url} alt={`${c.brandName} logo`} width="40" height="40" className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-cover" />
           <div className="leading-tight min-w-0">
             <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
             <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
@@ -270,7 +281,7 @@ function Hero({ c }: { c: SiteContent }) {
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <img src={dontGiveUp.url} alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
+        <img src={dontGiveUp900.url} srcSet={srcSet(dontGiveUp480, dontGiveUp900)} sizes="100vw" width="900" height="497" fetchPriority="high" alt="Don't give up wall art" className="w-full h-full object-cover opacity-60" />
         <div className={`absolute inset-0 ${dir === "rtl" ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-background via-background/85 to-background/30`} />
       </div>
       <div className="container-x grid lg:grid-cols-2 gap-12 py-20 sm:py-28 lg:py-40 items-center">
@@ -301,7 +312,7 @@ function Hero({ c }: { c: SiteContent }) {
         <div className="relative hidden lg:block">
           <div className="absolute -top-6 -left-6 right-6 bottom-6 border-2 border-primary/40 rounded-lg tilt-soft" />
           <div className="img-zoom relative rounded-lg overflow-hidden">
-            <img src={stayStrong.url} alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
+            <img src={stayStrong900.url} srcSet={srcSet(stayStrong480, stayStrong900)} sizes="(min-width:1024px) 560px, 100vw" width="900" height="497" loading="lazy" alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
           </div>
           <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 jiggle" data-inview>
             {t.noExcusesBadge}
@@ -347,7 +358,7 @@ function About({ c }: { c: SiteContent }) {
       <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
         <div className="relative">
           <div className="img-zoom rounded-lg overflow-hidden">
-            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover" />
+            <img src={cableMachine900.url} srcSet={srcSet(cableMachine480, cableMachine900)} sizes="(min-width:1024px) 50vw, 100vw" width="900" height="497" loading="lazy" alt="Training floor" className="rounded-lg w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover" />
           </div>
           <div className="absolute -bottom-6 -left-2 sm:-left-6 bg-card border border-border rounded-lg p-4 sm:p-5 max-w-[200px] sm:max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">{t.est}</div>
@@ -427,10 +438,11 @@ function Facility() {
         <p className="mt-4 text-muted-foreground">{t.facilitySub}</p>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells.url} alt="Hammer Strength dumbbells" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger.url} alt="Stronger than you think" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine.url} alt="Cable machines" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
-        <div className="img-zoom shake-on-hover col-span-12 sm:col-span-6 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong.url} alt="Stay strong poster" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-8 rounded-lg overflow-hidden" data-inview><img src={dumbbells900.url} srcSet={srcSet(dumbbells480, dumbbells900)} sizes="(min-width:768px) 66vw, 100vw" width="900" height="497" loading="lazy" alt="Hammer Strength dumbbells" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-4 rounded-lg overflow-hidden hover-lift" data-inview><img src={stronger900.url} srcSet={srcSet(stronger480, stronger900)} sizes="(min-width:768px) 33vw, 100vw" width="900" height="497" loading="lazy" alt="Stronger than you think" className="h-[220px] sm:h-[300px] md:h-[360px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 md:col-span-5 rounded-lg overflow-hidden hover-lift" data-inview><img src={cableMachine900.url} srcSet={srcSet(cableMachine480, cableMachine900)} sizes="(min-width:768px) 42vw, 100vw" width="900" height="497" loading="lazy" alt="Cable machines" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+        <div className="img-zoom shake-on-hover col-span-12 sm:col-span-6 md:col-span-4 rounded-lg overflow-hidden" data-inview><img src={stayStrong900.url} srcSet={srcSet(stayStrong480, stayStrong900)} sizes="(min-width:768px) 33vw, (min-width:640px) 50vw, 100vw" width="900" height="497" loading="lazy" alt="Stay strong poster" className="h-[220px] sm:h-[280px] md:h-[320px] w-full object-cover" /></div>
+
         <div className="col-span-12 sm:col-span-6 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between min-h-[160px]">
           <div className="font-display text-2xl sm:text-3xl leading-none">{t.facilityCTA}</div>
           <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">{t.visitUsShort} <span className={`transition-transform ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span></a>
