@@ -309,7 +309,7 @@ function Hero({ c }: { c: SiteContent }) {
         <div className="relative hidden lg:block">
           <div className="absolute -top-6 -left-6 right-6 bottom-6 border-2 border-primary/40 rounded-lg tilt-soft" />
           <div className="img-zoom relative rounded-lg overflow-hidden">
-            <img src={stayStrong.url} alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
+            <img src={stayStrong900.url} srcSet={srcSet(stayStrong480, stayStrong900)} sizes="(min-width:1024px) 560px, 100vw" width="900" height="497" loading="lazy" alt="Stay strong" className="rounded-lg w-full h-[560px] object-cover" />
           </div>
           <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground font-display text-xl px-6 py-3 rounded-md rotate-3 jiggle" data-inview>
             {t.noExcusesBadge}
