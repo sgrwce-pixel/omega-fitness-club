@@ -355,7 +355,7 @@ function About({ c }: { c: SiteContent }) {
       <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
         <div className="relative">
           <div className="img-zoom rounded-lg overflow-hidden">
-            <img src={cableMachine.url} alt="Training floor" className="rounded-lg w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover" />
+            <img src={cableMachine900.url} srcSet={srcSet(cableMachine480, cableMachine900)} sizes="(min-width:1024px) 50vw, 100vw" width="900" height="497" loading="lazy" alt="Training floor" className="rounded-lg w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover" />
           </div>
           <div className="absolute -bottom-6 -left-2 sm:-left-6 bg-card border border-border rounded-lg p-4 sm:p-5 max-w-[200px] sm:max-w-[220px] shadow-2xl">
             <div className="text-xs text-muted-foreground tracking-widest">{t.est}</div>
