@@ -16,6 +16,10 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Bot honeypot: hidden from real users, bots auto-fill it.
+  const [company, setCompany] = useState("");
+  const [formOpenedAt] = useState(() => Date.now());
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -29,9 +33,13 @@ function AuthPage() {
     setError(null);
     try {
       if (mode === "signup") {
+        if (company.trim() !== "" || Date.now() - formOpenedAt < 2000) {
+          throw new Error("Submission rejected. Please try again.");
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
+
           options: {
             emailRedirectTo: `${window.location.origin}/account`,
             data: { full_name: fullName },
