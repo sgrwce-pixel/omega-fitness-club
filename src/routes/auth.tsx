@@ -94,13 +94,28 @@ function AuthPage() {
 
           <form onSubmit={submit} className="space-y-3">
             {mode === "signup" && (
-              <input
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Full name"
-                required
-                className="w-full rounded-md bg-background border border-border px-3 py-2.5 focus:outline-none focus:border-primary"
-              />
+              <>
+                <input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Full name"
+                  required
+                  className="w-full rounded-md bg-background border border-border px-3 py-2.5 focus:outline-none focus:border-primary"
+                />
+                {/* Honeypot: off-screen, not display:none, so bots fill it. */}
+                <div aria-hidden="true" className="absolute left-[-9999px] top-auto w-px h-px overflow-hidden">
+                  <label htmlFor="company">Company</label>
+                  <input
+                    id="company"
+                    name="company"
+                    type="text"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                    autoComplete="off"
+                    tabIndex={-1}
+                  />
+                </div>
+              </>
             )}
             <input
               type="email"
