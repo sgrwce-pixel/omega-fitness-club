@@ -1,7 +1,10 @@
 import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { createMemberAccount } from "@/lib/admin-users.functions";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
+
 import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/admin")({
