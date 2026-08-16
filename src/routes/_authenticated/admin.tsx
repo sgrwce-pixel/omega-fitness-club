@@ -245,7 +245,10 @@ function Admin() {
               </tbody>
             </table>
           </div>
+        ) : tab === "new" ? (
+          <NewMemberForm onCreated={loadAll} />
         ) : (
+
           <div className="grid gap-3">
             {requests.length === 0 && (
               <div className="rounded-xl border border-border p-8 text-center text-muted-foreground">No plan requests yet.</div>
