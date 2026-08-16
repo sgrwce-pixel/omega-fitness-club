@@ -28,7 +28,7 @@ type PlanRequest = { id: string; user_id: string; plan: string; message: string 
 
 function Admin() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"content" | "members" | "requests">("content");
+  const [tab, setTab] = useState<"content" | "members" | "new" | "requests">("content");
   const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
   const [members, setMembers] = useState<Member[]>([]);
   const [memberships, setMemberships] = useState<Record<string, MembershipRow>>({});
