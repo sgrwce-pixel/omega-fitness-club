@@ -123,13 +123,14 @@ function Admin() {
             <button onClick={signOut} className="text-sm rounded-md bg-primary text-primary-foreground px-3 py-1.5 font-semibold">Sign out</button>
           </div>
         </div>
-        <div className="container-x flex gap-1 -mb-px">
-          {(["content", "members", "requests"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === t ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
-              {t === "content" ? "Site content" : t === "members" ? `Members (${members.length})` : `Plan Requests${pendingCount ? ` (${pendingCount})` : ""}`}
+        <div className="container-x flex gap-1 -mb-px overflow-x-auto">
+          {(["content", "members", "new", "requests"] as const).map((t) => (
+            <button key={t} onClick={() => setTab(t)} className={`whitespace-nowrap px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === t ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+              {t === "content" ? "Site content" : t === "members" ? `Members (${members.length})` : t === "new" ? "New customer account" : `Plan Requests${pendingCount ? ` (${pendingCount})` : ""}`}
             </button>
           ))}
         </div>
+
       </header>
 
       <main className="container-x py-10">
