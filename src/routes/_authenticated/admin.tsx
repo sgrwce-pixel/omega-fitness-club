@@ -348,3 +348,90 @@ function MapLocationField({ value, onChange }: { value: string; onChange: (v: st
   );
 }
 
+
+function NewMemberForm({ onCreated }: { onCreated: () => void | Promise<void> }) {
+  const createMember = useServerFn(createMemberAccount);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [created, setCreated] = useState<{ email: string; password: string } | null>(null);
+
+  function generatePassword() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    const bytes = new Uint32Array(12);
+    crypto.getRandomValues(bytes);
+    setPassword(Array.from(bytes, (b) => chars[b % chars.length]).join(""));
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    setCreated(null);
+    try {
+      const res = await createMember({ data: { fullName, email, phone, password } });
+      setCreated({ email: res.email, password });
+      setFullName(""); setEmail(""); setPhone(""); setPassword("");
+      await onCreated();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not create the account.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="max-w-xl grid gap-6">
+      <section className="rounded-xl border border-border bg-card p-6">
+        <h2 className="font-display text-2xl mb-1">CREATE A CUSTOMER ACCOUNT</h2>
+        <p className="text-sm text-muted-foreground mb-5">
+          Customers can no longer sign up themselves. Create the account here and hand the login details over in person.
+        </p>
+        <form onSubmit={submit} className="space-y-4">
+          <Input label="Full name" value={fullName} onChange={setFullName} />
+          <Input label="Email" value={email} onChange={setEmail} />
+          <Input label="Phone (optional)" value={phone} onChange={setPhone} />
+          <div className="flex items-end gap-2">
+            <div className="flex-1">
+              <Input label="Temporary password (min 8 chars)" value={password} onChange={setPassword} />
+            </div>
+            <button type="button" onClick={generatePassword} className="rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary">
+              Generate
+            </button>
+          </div>
+          {error && <div className="text-sm text-destructive">{error}</div>}
+          <button type="submit" disabled={busy} className="rounded-md bg-primary text-primary-foreground px-6 py-2.5 font-bold disabled:opacity-60">
+            {busy ? "Creating..." : "Create account"}
+          </button>
+        </form>
+      </section>
+
+      {created && (
+        <section className="rounded-xl border border-primary/40 bg-card p-6">
+          <h3 className="font-display text-xl text-primary mb-1">ACCOUNT CREATED</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Write these down and give them to the customer — the password is shown only once.
+          </p>
+          <div className="space-y-2 font-mono text-sm">
+            <div className="rounded-md bg-background border border-border px-3 py-2">Email: {created.email}</div>
+            <div className="rounded-md bg-background border border-border px-3 py-2">Password: {created.password}</div>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => navigator.clipboard?.writeText(`Email: ${created.email}\nPassword: ${created.password}`)}
+              className="rounded-md border border-border px-4 py-2 text-sm font-semibold hover:border-primary"
+            >
+              Copy details
+            </button>
+            <button onClick={() => setCreated(null)} className="rounded-md border border-border px-4 py-2 text-sm font-semibold hover:border-primary">
+              Done
+            </button>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
