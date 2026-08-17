@@ -94,26 +94,7 @@ function Account() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="container-x flex items-center justify-between py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
-              <img src={omegaLogo.url} alt="Omega Fitness logo" className="h-full w-full object-contain" />
-            </div>
-            <div className="font-display tracking-wider">OMEGA FITNESS</div>
-          </Link>
-          <div className="flex items-center gap-3">
-            {isAdmin && (
-              <Link to="/admin" className="text-sm rounded-md border border-border px-3 py-1.5 hover:border-primary">Admin</Link>
-            )}
-            <button onClick={signOut} className="text-sm rounded-md bg-primary text-primary-foreground px-3 py-1.5 font-semibold">
-              Sign out
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="container-x py-12 grid lg:grid-cols-3 gap-6">
+      <main className="container-x py-8 sm:py-12 grid lg:grid-cols-3 gap-6">
         <section className="lg:col-span-2 rounded-xl border border-border bg-card p-6">
           <h1 className="font-display text-3xl">MY PROFILE</h1>
           <p className="text-sm text-muted-foreground">Keep your info up to date.</p>

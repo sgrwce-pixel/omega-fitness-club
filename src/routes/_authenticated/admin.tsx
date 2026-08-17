@@ -110,33 +110,36 @@ function Admin() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border bg-card">
-        <div className="container-x flex items-center justify-between py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
-              <img src={omegaLogo.url} alt="Omega Fitness logo" className="h-full w-full object-contain" />
-            </div>
-            <div>
-              <div className="font-display tracking-wider">OMEGA FITNESS</div>
-              <div className="text-[10px] tracking-widest text-primary">ADMIN PANEL</div>
-            </div>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/account" className="text-sm rounded-md border border-border px-3 py-1.5 hover:border-primary">My account</Link>
-            <button onClick={signOut} className="text-sm rounded-md bg-primary text-primary-foreground px-3 py-1.5 font-semibold">Sign out</button>
+      <div className="border-b border-border bg-card/60 backdrop-blur-md mt-2">
+        <div className="container-x flex items-center justify-between py-2">
+          <div className="flex gap-1 overflow-x-auto">
+            {(["content", "members", "new", "requests"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`whitespace-nowrap px-4 py-2 text-sm font-semibold border-b-2 transition ${
+                  tab === t
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t === "content"
+                  ? "Site content"
+                  : t === "members"
+                    ? `Members (${members.length})`
+                    : t === "new"
+                      ? "New customer account"
+                      : `Plan Requests${pendingCount ? ` (${pendingCount})` : ""}`}
+              </button>
+            ))}
+          </div>
+          <div className="text-[10px] tracking-widest text-primary font-semibold uppercase px-2.5 py-1 rounded bg-primary/10 border border-primary/20 hidden md:block">
+            ADMIN PANEL
           </div>
         </div>
-        <div className="container-x flex gap-1 -mb-px overflow-x-auto">
-          {(["content", "members", "new", "requests"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`whitespace-nowrap px-4 py-2 text-sm font-semibold border-b-2 transition ${tab === t ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
-              {t === "content" ? "Site content" : t === "members" ? `Members (${members.length})` : t === "new" ? "New customer account" : `Plan Requests${pendingCount ? ` (${pendingCount})` : ""}`}
-            </button>
-          ))}
-        </div>
+      </div>
 
-      </header>
-
-      <main className="container-x py-10">
+      <main className="container-x py-8">
         {tab === "content" ? (
           <div className="grid gap-8 max-w-3xl">
             <Section title="Brand">

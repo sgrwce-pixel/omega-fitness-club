@@ -5,10 +5,31 @@ import CardNav, { type CardNavItem } from "@/components/CardNav";
 
 function AuthenticatedLayout() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string | undefined>();
+  const [userTag, setUserTag] = useState<string | undefined>();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? undefined));
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (data.user) {
+        const rawUsername =
+          (data.user.user_metadata?.username as string | undefined) ||
+          data.user.email?.replace(/@omega\.internal$/i, "") ||
+          "";
+        if (rawUsername) {
+          setUserTag(rawUsername.replace(/^@/, ""));
+        }
+
+        if (data.user.id) {
+          const { data: role } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", data.user.id)
+            .eq("role", "admin")
+            .maybeSingle();
+          setIsAdmin(!!role);
+        }
+      }
+    });
   }, []);
 
   const signOut = async () => {
@@ -34,6 +55,7 @@ function AuthenticatedLayout() {
       links: [
         { label: "Pricing", href: "/#pricing", ariaLabel: "Membership Pricing" },
         { label: "My Account", href: "/account", ariaLabel: "My Account" },
+        ...(isAdmin ? [{ label: "Admin Panel", href: "/admin", ariaLabel: "Admin Panel" }] : []),
         { label: "Sign out", onClick: signOut, ariaLabel: "Sign out" },
       ],
     },
@@ -61,7 +83,7 @@ function AuthenticatedLayout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <CardNav items={navItems} userEmail={email} />
+      <CardNav items={navItems} userTag={userTag} isAdmin={isAdmin} onSignOut={signOut} />
       <Outlet />
     </div>
   );

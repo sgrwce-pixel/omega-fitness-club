@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
@@ -21,14 +21,18 @@ type Props = {
   items: CardNavItem[];
   ctaLabel?: string;
   ctaHref?: string;
-  userEmail?: string;
+  userTag?: string;
+  isAdmin?: boolean;
+  onSignOut?: () => void | Promise<void>;
 };
 
 export default function CardNav({
   items,
   ctaLabel = "Back to site",
   ctaHref = "/",
-  userEmail,
+  userTag,
+  isAdmin = false,
+  onSignOut,
 }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -53,48 +57,83 @@ export default function CardNav({
     <div className="sticky top-0 z-50 w-full px-4 pt-4">
       <div
         ref={ref}
-        className="mx-auto max-w-6xl rounded-2xl border border-border bg-card/70 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-500 ease-out"
+        className="mx-auto max-w-6xl rounded-2xl border border-border bg-card/90 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-500 ease-out"
       >
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-5 h-16 gap-4">
-          <a href="/" className="flex items-center gap-2 min-w-0">
-            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
+        {/* Unified Top bar */}
+        <div className="flex items-center justify-between px-4 sm:px-5 h-16 gap-3">
+          <Link to="/" className="flex items-center gap-2.5 min-w-0">
+            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center shrink-0">
               <img
                 src={omegaLogo.url}
                 alt="Omega Fitness logo"
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="font-semibold tracking-wide text-sm text-foreground hidden sm:inline">
-              OMEGA FITNESS
-            </span>
-          </a>
+            <div className="leading-tight">
+              <div className="font-display tracking-wider text-base text-foreground truncate">
+                OMEGA FITNESS
+              </div>
+              {isAdmin && (
+                <div className="text-[10px] tracking-widest text-primary font-semibold">
+                  ADMIN
+                </div>
+              )}
+            </div>
+          </Link>
 
-          <div className="flex items-center gap-3 min-w-0">
-            {userEmail && (
-              <span className="hidden md:inline text-xs text-muted-foreground truncate max-w-[200px]">
-                {userEmail}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {userTag && (
+              <span className="hidden md:inline-flex items-center text-xs font-semibold text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/25">
+                {userTag}
               </span>
             )}
-            <a
-              href={ctaHref}
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-xs font-semibold tracking-wide transition hover:opacity-90"
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="text-xs rounded-md border border-border px-3 py-1.5 font-semibold hover:border-primary transition"
+              >
+                Admin
+              </Link>
+            )}
+            <Link
+              to="/account"
+              className="text-xs rounded-md border border-border px-3 py-1.5 font-semibold hover:border-primary transition"
             >
-              {ctaLabel} →
-            </a>
+              Account
+            </Link>
+            {onSignOut ? (
+              <button
+                onClick={onSignOut}
+                className="text-xs rounded-md bg-primary text-primary-foreground px-3 py-1.5 font-semibold hover:opacity-90 transition"
+              >
+                Sign out
+              </button>
+            ) : (
+              <a
+                href={ctaHref}
+                className="hidden sm:inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:border-primary transition"
+              >
+                {ctaLabel}
+              </a>
+            )}
             <button
               aria-label="Toggle menu"
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="relative w-10 h-10 grid place-items-center rounded-full text-foreground hover:bg-white/10 transition"
+              className="relative w-9 h-9 grid place-items-center rounded-lg text-foreground hover:bg-white/10 transition border border-border shrink-0"
             >
               <span
-                className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${
+                className={`block w-4 h-0.5 bg-current absolute transition-transform duration-300 ${
                   open ? "rotate-45" : "-translate-y-1.5"
                 }`}
               />
               <span
-                className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${
+                className={`block w-4 h-0.5 bg-current absolute transition-opacity duration-200 ${
+                  open ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`block w-4 h-0.5 bg-current absolute transition-transform duration-300 ${
                   open ? "-rotate-45" : "translate-y-1.5"
                 }`}
               />
