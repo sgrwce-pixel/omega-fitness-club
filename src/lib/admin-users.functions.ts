@@ -1,18 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { usernameToEmail, validateUsername } from "@/lib/username";
 
-type CreateMemberInput = { email: string; password: string; fullName: string; phone?: string };
+type CreateMemberInput = { username: string; password: string; fullName: string; phone?: string };
 
 function validate(input: CreateMemberInput): CreateMemberInput {
-  const email = String(input.email ?? "").trim().toLowerCase();
+  const username = validateUsername(input.username ?? "");
   const password = String(input.password ?? "");
   const fullName = String(input.fullName ?? "").trim();
   const phone = String(input.phone ?? "").trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Enter a valid email address.");
   if (password.length < 8 || password.length > 72) throw new Error("Password must be 8–72 characters.");
   if (fullName.length < 2 || fullName.length > 120) throw new Error("Full name must be 2–120 characters.");
   if (phone.length > 32) throw new Error("Phone is too long.");
-  return { email, password, fullName, phone };
+  return { username, password, fullName, phone };
 }
 
 export const createMemberAccount = createServerFn({ method: "POST" })
@@ -33,11 +33,20 @@ export const createMemberAccount = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+    const internalEmail = usernameToEmail(data.username);
+
+    const { data: taken } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("username", data.username)
+      .maybeSingle();
+    if (taken) throw new Error("That username is already taken.");
+
     const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
-      email: data.email,
+      email: internalEmail,
       password: data.password,
       email_confirm: true,
-      user_metadata: { full_name: data.fullName },
+      user_metadata: { full_name: data.fullName, username: data.username },
     });
     if (createError || !created.user) {
       throw new Error(createError?.message ?? "Could not create the account.");
@@ -47,11 +56,12 @@ export const createMemberAccount = createServerFn({ method: "POST" })
       .from("profiles")
       .upsert({
         id: created.user.id,
-        email: data.email,
+        username: data.username,
+        email: internalEmail,
         full_name: data.fullName,
         ...(data.phone ? { phone: data.phone } : {}),
       });
     if (profileError) throw new Error(`Account created, but profile failed: ${profileError.message}`);
 
-    return { id: created.user.id, email: data.email };
+    return { username: data.username };
   });
