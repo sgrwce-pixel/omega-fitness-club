@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { usernameToEmail } from "@/lib/username";
+import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -19,7 +21,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,11 +37,21 @@ function AuthPage() {
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: usernameToEmail(username),
+        password,
+      });
+      if (signInError) {
+        setError(
+          signInError.message?.toLowerCase().includes("invalid login")
+            ? "Incorrect username or password."
+            : signInError.message || "Could not sign you in. Please try again.",
+        );
+        return;
+      }
       navigate({ to: "/account" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error && err.message ? err.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,7 +61,9 @@ function AuthPage() {
     <div className="min-h-screen grid place-items-center px-4 py-16">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center gap-3 mb-8 justify-center">
-          <div className="w-10 h-10 rounded-md bg-primary text-primary-foreground grid place-items-center font-display text-xl">Ω</div>
+          <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center">
+            <img src={omegaLogo.url} alt="Omega Fitness Club logo" className="h-full w-full object-contain" />
+          </div>
           <div className="font-display tracking-wider text-xl">OMEGA FITNESS</div>
         </Link>
         <div className="rounded-xl border border-border bg-card p-8">
@@ -58,12 +72,13 @@ function AuthPage() {
 
           <form onSubmit={submit} className="space-y-3 mt-6">
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ""))}
+              placeholder="Username"
               required
-              autoComplete="email"
+              autoCapitalize="none"
+              autoComplete="username"
               className="w-full rounded-md bg-background border border-border px-3 py-2.5 focus:outline-none focus:border-primary"
             />
             <input
