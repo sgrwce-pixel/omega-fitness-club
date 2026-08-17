@@ -615,7 +615,7 @@ function Footer({ c }: { c: SiteContent }) {
 
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-lg border border-primary/20 bg-card p-0.5 flex items-center justify-center">
-            <img src={omegaLogo.url} alt="Omega Fitness Club logo" className="h-full w-full object-contain" />
+            <img src={omegaLogo96.url} alt="Omega Fitness Club logo" className="h-full w-full object-contain" />
           </div>
           <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
         </div>
