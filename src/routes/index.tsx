@@ -614,7 +614,9 @@ function Footer({ c }: { c: SiteContent }) {
       <div className="container-x flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-4 text-sm text-muted-foreground text-center sm:text-left">
 
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded bg-primary text-primary-foreground grid place-items-center font-display">Ω</div>
+          <div className="h-8 w-8 rounded-lg border border-primary/20 bg-card p-0.5 flex items-center justify-center">
+            <img src={omegaLogo96.url} alt="Omega Fitness Club logo" className="h-full w-full object-contain" />
+          </div>
           <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
         </div>
         <div className="flex items-center gap-4">
