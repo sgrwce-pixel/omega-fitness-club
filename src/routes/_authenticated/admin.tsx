@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Member = {
-  id: string; email: string | null; full_name: string | null; phone: string | null;
+  id: string; username: string | null; full_name: string | null; phone: string | null;
   created_at: string;
 };
 type MembershipRow = { id?: string; user_id: string; plan: string; status: string; start_date: string; end_date: string | null };
@@ -206,7 +206,7 @@ function Admin() {
               <thead className="bg-card text-left">
                 <tr>
                   <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Email</th>
+                  <th className="px-4 py-3">Username</th>
                   <th className="px-4 py-3">Phone</th>
                   <th className="px-4 py-3">Plan</th>
                   <th className="px-4 py-3">Status</th>
@@ -220,7 +220,7 @@ function Admin() {
                   return (
                     <tr key={m.id} className="border-t border-border">
                       <td className="px-4 py-3 font-semibold">{m.full_name || "—"}</td>
-                      <td className="px-4 py-3 text-muted-foreground">{m.email}</td>
+                      <td className="px-4 py-3 text-muted-foreground">{m.username || "—"}</td>
                       <td className="px-4 py-3 text-muted-foreground">{m.phone || "—"}</td>
                       <td className="px-4 py-3 capitalize">{ms?.plan || "—"}</td>
                       <td className="px-4 py-3"><span className={ms?.status === "active" ? "text-primary" : "text-muted-foreground"}>{ms?.status || "none"}</span></td>
@@ -258,7 +258,7 @@ function Admin() {
               return (
                 <div key={r.id} className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
                   <div>
-                    <div className="font-semibold">{member?.full_name || "—"} <span className="text-muted-foreground text-sm">· {member?.email}</span></div>
+                    <div className="font-semibold">{member?.full_name || "—"} <span className="text-muted-foreground text-sm">· {member?.username}</span></div>
                     <div className="text-sm mt-1">Requested plan: <span className="text-primary capitalize font-semibold">{r.plan}</span></div>
                     {r.message && <div className="text-sm text-muted-foreground mt-1">"{r.message}"</div>}
                     <div className="text-xs text-muted-foreground mt-1">{new Date(r.created_at).toLocaleString()} · status: <span className="capitalize">{r.status}</span></div>
@@ -352,12 +352,12 @@ function MapLocationField({ value, onChange }: { value: string; onChange: (v: st
 function NewMemberForm({ onCreated }: { onCreated: () => void | Promise<void> }) {
   const createMember = useServerFn(createMemberAccount);
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [created, setCreated] = useState<{ email: string; password: string } | null>(null);
+  const [created, setCreated] = useState<{ username: string; password: string } | null>(null);
 
   function generatePassword() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
@@ -372,9 +372,9 @@ function NewMemberForm({ onCreated }: { onCreated: () => void | Promise<void> })
     setError(null);
     setCreated(null);
     try {
-      const res = await createMember({ data: { fullName, email, phone, password } });
-      setCreated({ email: res.email, password });
-      setFullName(""); setEmail(""); setPhone(""); setPassword("");
+      const res = await createMember({ data: { fullName, username, phone, password } });
+      setCreated({ username: res.username, password });
+      setFullName(""); setUsername(""); setPhone(""); setPassword("");
       await onCreated();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create the account.");
@@ -392,7 +392,7 @@ function NewMemberForm({ onCreated }: { onCreated: () => void | Promise<void> })
         </p>
         <form onSubmit={submit} className="space-y-4">
           <Input label="Full name" value={fullName} onChange={setFullName} />
-          <Input label="Email" value={email} onChange={setEmail} />
+          <Input label="Username (lowercase, no spaces)" value={username} onChange={(v) => setUsername(v.toLowerCase().replace(/[^a-z0-9_.]/g, ""))} />
           <Input label="Phone (optional)" value={phone} onChange={setPhone} />
           <div className="flex items-end gap-2">
             <div className="flex-1">
@@ -416,12 +416,12 @@ function NewMemberForm({ onCreated }: { onCreated: () => void | Promise<void> })
             Write these down and give them to the customer — the password is shown only once.
           </p>
           <div className="space-y-2 font-mono text-sm">
-            <div className="rounded-md bg-background border border-border px-3 py-2">Email: {created.email}</div>
+            <div className="rounded-md bg-background border border-border px-3 py-2">Username: {created.username}</div>
             <div className="rounded-md bg-background border border-border px-3 py-2">Password: {created.password}</div>
           </div>
           <div className="flex gap-2 mt-4">
             <button
-              onClick={() => navigator.clipboard?.writeText(`Email: ${created.email}\nPassword: ${created.password}`)}
+              onClick={() => navigator.clipboard?.writeText(`Username: ${created.username}\nPassword: ${created.password}`)}
               className="rounded-md border border-border px-4 py-2 text-sm font-semibold hover:border-primary"
             >
               Copy details

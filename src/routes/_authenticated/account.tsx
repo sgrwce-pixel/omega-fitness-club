@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/account")({
   component: Account,
 });
 
-type Profile = { id: string; email: string | null; full_name: string | null; phone: string | null; fitness_goal: string | null; avatar_url: string | null };
+type Profile = { id: string; username: string | null; full_name: string | null; phone: string | null; fitness_goal: string | null; avatar_url: string | null };
 type Membership = { plan: string; status: string; start_date: string; end_date: string | null };
 type PlanRequest = { id: string; plan: string; message: string | null; status: string; created_at: string };
 
@@ -106,7 +106,7 @@ function Account() {
           <p className="text-sm text-muted-foreground">Keep your info up to date.</p>
           {profile ? (
             <div className="mt-6 grid gap-4">
-              <Field label="Email"><div className="text-muted-foreground">{profile.email}</div></Field>
+              <Field label="Username"><div className="text-muted-foreground">{profile.username}</div></Field>
               <Field label="Full name">
                 <input value={profile.full_name ?? ""} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} className="w-full rounded-md bg-background border border-border px-3 py-2" />
               </Field>
