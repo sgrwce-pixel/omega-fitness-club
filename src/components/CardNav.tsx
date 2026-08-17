@@ -1,46 +1,39 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Mail, Instagram, Facebook, X, ArrowRight, Menu } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
-export type CardNavLink = {
+export type NavLinkItem = {
   label: string;
   href?: string;
-  ariaLabel?: string;
-  icon?: string;
   onClick?: () => void | Promise<void>;
-};
-export type CardNavItem = {
-  label: string;
-  bgColor: string;
-  textColor: string;
-  links: CardNavLink[];
 };
 
 type Props = {
-  items: CardNavItem[];
-  ctaLabel?: string;
-  ctaHref?: string;
   userTag?: string;
   isAdmin?: boolean;
   onSignOut?: () => void | Promise<void>;
+  customLinks?: NavLinkItem[];
 };
 
 export default function CardNav({
-  items,
-  ctaLabel = "Back to site",
-  ctaHref = "/",
   userTag,
   isAdmin = false,
   onSignOut,
+  customLinks,
 }: Props) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
+  // Close on Escape or click outside
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
@@ -53,178 +46,204 @@ export default function CardNav({
     };
   }, [open]);
 
+  const defaultLinks: NavLinkItem[] = [
+    { label: "About", href: "/#about" },
+    { label: "Programs", href: "/#programs" },
+    { label: "Facility", href: "/#facility" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "My account", href: "/account" },
+    ...(isAdmin ? [{ label: "Admin Panel", href: "/admin" }] : []),
+  ];
+
+  const links = customLinks ?? defaultLinks;
+
+  const handleSignOut = async () => {
+    setOpen(false);
+    if (onSignOut) {
+      await onSignOut();
+    } else {
+      await supabase.auth.signOut();
+      navigate({ to: "/" });
+    }
+  };
+
   return (
-    <div className="sticky top-0 z-50 w-full px-4 pt-4">
-      <div
-        ref={ref}
-        className="mx-auto max-w-6xl rounded-2xl border border-border bg-card/90 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-500 ease-out"
-      >
-        {/* Unified Top bar */}
-        <div className="flex items-center justify-between px-4 sm:px-5 h-16 gap-3">
-          <Link to="/" className="flex items-center gap-2.5 min-w-0">
-            <div className="h-10 w-10 rounded-xl border border-primary/20 bg-card p-1 shadow-[0_0_20px_-5px_rgba(132,204,22,0.35)] flex items-center justify-center shrink-0">
+    <>
+      {/* Floating Top Navbar Header */}
+      <div className="sticky top-0 z-40 w-full px-4 pt-4">
+        <div className="mx-auto max-w-6xl rounded-2xl border border-white/10 bg-[#0B0B0B]/90 backdrop-blur-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] px-4 sm:px-6 h-16 flex items-center justify-between gap-3 transition-all duration-300">
+          
+          {/* Logo Brand */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="h-9 w-9 rounded-xl bg-[#8AFF3C] p-1 flex items-center justify-center shadow-[0_0_20px_-3px_rgba(138,255,60,0.45)] group-hover:scale-105 transition-transform">
               <img
                 src={omegaLogo.url}
-                alt="Omega Fitness logo"
-                className="h-full w-full object-contain"
+                alt="Omega Fitness"
+                className="h-full w-full object-contain mix-blend-multiply"
               />
             </div>
-            <div className="leading-tight">
-              <div className="font-display tracking-wider text-base text-foreground truncate">
-                OMEGA FITNESS
-              </div>
-              {isAdmin && (
-                <div className="text-[10px] tracking-widest text-primary font-semibold">
-                  ADMIN
-                </div>
-              )}
-            </div>
+            <span className="font-bold tracking-tight text-base sm:text-lg text-white group-hover:text-[#8AFF3C] transition-colors">
+              Omega fitness
+            </span>
           </Link>
 
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
             {userTag && (
-              <span className="hidden md:inline-flex items-center text-xs font-semibold text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/25">
+              <span className="hidden md:inline-flex items-center text-xs font-semibold text-[#8AFF3C] px-3 py-1 rounded-full bg-[#8AFF3C]/10 border border-[#8AFF3C]/25">
                 {userTag}
               </span>
             )}
+            
             {isAdmin && (
               <Link
                 to="/admin"
-                className="text-xs rounded-md border border-border px-3 py-1.5 font-semibold hover:border-primary transition"
+                className="hidden sm:inline-flex text-xs rounded-xl border border-white/10 px-3.5 py-2 font-semibold text-white/90 hover:border-[#8AFF3C] hover:text-[#8AFF3C] transition"
               >
                 Admin
               </Link>
             )}
+
             <Link
               to="/account"
-              className="text-xs rounded-md border border-border px-3 py-1.5 font-semibold hover:border-primary transition"
+              className="hidden sm:inline-flex text-xs rounded-xl border border-white/10 px-3.5 py-2 font-semibold text-white/90 hover:border-[#8AFF3C] hover:text-[#8AFF3C] transition"
             >
-              Account
+              My account
             </Link>
-            {onSignOut ? (
-              <button
-                onClick={onSignOut}
-                className="text-xs rounded-md bg-primary text-primary-foreground px-3 py-1.5 font-semibold hover:opacity-90 transition"
-              >
-                Sign out
-              </button>
-            ) : (
-              <a
-                href={ctaHref}
-                className="hidden sm:inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:border-primary transition"
-              >
-                {ctaLabel}
-              </a>
-            )}
+
+            {/* Menu Trigger Button */}
             <button
-              aria-label="Toggle menu"
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-              className="relative w-9 h-9 grid place-items-center rounded-lg text-foreground hover:bg-white/10 transition border border-border shrink-0"
+              type="button"
+              aria-label="Open menu"
+              onClick={() => setOpen(true)}
+              className="flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-2 text-white transition hover:border-[#8AFF3C]"
             >
-              <span
-                className={`block w-4 h-0.5 bg-current absolute transition-transform duration-300 ${
-                  open ? "rotate-45" : "-translate-y-1.5"
-                }`}
-              />
-              <span
-                className={`block w-4 h-0.5 bg-current absolute transition-opacity duration-200 ${
-                  open ? "opacity-0" : "opacity-100"
-                }`}
-              />
-              <span
-                className={`block w-4 h-0.5 bg-current absolute transition-transform duration-300 ${
-                  open ? "-rotate-45" : "translate-y-1.5"
-                }`}
-              />
+              <Menu className="w-4 h-4 text-[#8AFF3C]" />
+              <span className="text-xs font-bold tracking-wider uppercase">Menu</span>
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Expanding card panel */}
-        <div
-          className="grid transition-[grid-template-rows] duration-500 ease-out"
-          style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
-        >
-          <div className="overflow-hidden">
-            <div className="grid gap-3 p-4 md:grid-cols-3">
-              {items.map((it, i) => (
-                <div
-                  key={it.label}
-                  className="group/card rounded-xl p-5 border-l-2 border-transparent hover:border-primary/30 transition-all duration-500 ease-out"
-                  style={{
-                    background: it.bgColor,
-                    color: it.textColor,
-                    transform: open ? "translateY(0)" : "translateY(20px)",
-                    opacity: open ? 1 : 0,
-                    transitionDelay: open ? `${i * 80}ms` : "0ms",
-                  }}
-                >
-                  <div className="text-xs tracking-[0.25em] opacity-70">0{i + 1}</div>
-                  <div className="font-display text-2xl mt-2">{it.label}</div>
-                  <ul className="mt-4 space-y-2">
-                    {it.links.map((l) => (
-                      <li key={l.label}>
-                        <CardLink link={l} />
-                      </li>
-                    ))}
-                  </ul>
+      {/* Sleek Popup Card Overlay (Matching Reference Image) */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center sm:justify-end p-4 sm:p-6 bg-black/60 backdrop-blur-md transition-all duration-200">
+          <div
+            ref={menuRef}
+            className="w-full max-w-sm rounded-3xl bg-[#0B0B0B] border border-white/10 p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col justify-between"
+            style={{
+              boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px -10px rgba(138, 255, 60, 0.15)",
+            }}
+          >
+            {/* Card Header: Green Icon + Brand + Close 'X' */}
+            <div className="flex items-center justify-between pb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-xl bg-[#8AFF3C] p-1 flex items-center justify-center shadow-[0_0_20px_-3px_rgba(138,255,60,0.5)]">
+                  <img
+                    src={omegaLogo.url}
+                    alt="Omega Fitness"
+                    className="h-full w-full object-contain mix-blend-multiply"
+                  />
+                </div>
+                <span className="font-bold text-white text-lg tracking-tight">
+                  Omega fitness
+                </span>
+              </div>
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={() => setOpen(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Vertical Link Items with Right Arrows & Divider lines */}
+            <nav className="divide-y divide-white/10 my-2">
+              {links.map((link) => (
+                <div key={link.label}>
+                  {link.onClick ? (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setOpen(false);
+                        await link.onClick!();
+                      }}
+                      className="w-full flex items-center justify-between py-4 text-left font-bold text-lg text-white hover:text-[#8AFF3C] transition-colors group"
+                    >
+                      <span>{link.label}</span>
+                      <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-[#8AFF3C] group-hover:translate-x-1 transition-all" />
+                    </button>
+                  ) : (
+                    <a
+                      href={link.href ?? "#"}
+                      onClick={() => setOpen(false)}
+                      className="w-full flex items-center justify-between py-4 font-bold text-lg text-white hover:text-[#8AFF3C] transition-colors group"
+                    >
+                      <span>{link.label}</span>
+                      <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-[#8AFF3C] group-hover:translate-x-1 transition-all" />
+                    </a>
+                  )}
                 </div>
               ))}
+            </nav>
+
+            {/* Bottom Footer Section: Social Icons + Big Green Button */}
+            <div className="pt-3">
+              {/* Green Contact & Social Icons */}
+              <div className="flex items-center gap-5 py-3 text-[#8AFF3C]">
+                <a
+                  href="/#contact"
+                  onClick={() => setOpen(false)}
+                  aria-label="Contact us"
+                  className="hover:scale-110 transition-transform"
+                >
+                  <Mail className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://instagram.com/club.omegafit"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Instagram"
+                  className="hover:scale-110 transition-transform"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://facebook.com/club.omegafit"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Facebook"
+                  className="hover:scale-110 transition-transform"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+              </div>
+
+              {/* Big Neon Green Action Button */}
+              {onSignOut ? (
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="w-full mt-2 rounded-2xl bg-[#8AFF3C] hover:bg-[#7BE832] text-black font-bold text-base py-3.5 text-center shadow-[0_0_25px_-5px_rgba(138,255,60,0.4)] transition-all active:scale-[0.99]"
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setOpen(false)}
+                  className="w-full mt-2 block rounded-2xl bg-[#8AFF3C] hover:bg-[#7BE832] text-black font-bold text-base py-3.5 text-center shadow-[0_0_25px_-5px_rgba(138,255,60,0.4)] transition-all active:scale-[0.99]"
+                >
+                  Sign in
+                </Link>
+              )}
             </div>
+
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function CardLink({ link }: { link: CardNavLink }) {
-  const navigate = useNavigate();
-  const handleClick = async (e: React.MouseEvent) => {
-    if (link.onClick) {
-      e.preventDefault();
-      await link.onClick();
-    }
-  };
-
-  const content = (
-    <>
-      {link.icon && <span className="text-base leading-none">{link.icon}</span>}
-      <span className="underline-offset-4 group-hover:underline flex-1">{link.label}</span>
-      <span className="transition-transform group-hover:translate-x-1">→</span>
+      )}
     </>
   );
-
-  if (link.onClick && !link.href) {
-    return (
-      <button
-        type="button"
-        onClick={handleClick}
-        aria-label={link.ariaLabel ?? link.label}
-        className="group inline-flex items-center gap-2 text-sm w-full text-left"
-      >
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <a
-      href={link.href ?? "#"}
-      onClick={handleClick}
-      aria-label={link.ariaLabel ?? link.label}
-      className="group inline-flex items-center gap-2 text-sm"
-    >
-      {content}
-    </a>
-  );
-}
-
-export function useSignOut() {
-  const navigate = useNavigate();
-  return async () => {
-    await supabase.auth.signOut();
-    navigate({ to: "/" });
-  };
 }
