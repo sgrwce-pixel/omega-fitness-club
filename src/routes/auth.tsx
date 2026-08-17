@@ -87,7 +87,7 @@ function AuthPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               required
-              minLength={6}
+              minLength={8}
               autoComplete="current-password"
               className="w-full rounded-md bg-background border border-border px-3 py-2.5 focus:outline-none focus:border-primary"
             />

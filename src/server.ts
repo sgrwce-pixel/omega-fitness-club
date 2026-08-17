@@ -42,7 +42,7 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 // app already uses, while blocking framing and unexpected script origins.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.lovable.app https://*.lovable.dev",
+  "script-src 'self' 'unsafe-inline' https://*.lovable.app https://*.lovable.dev",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
