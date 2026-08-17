@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { createMemberAccount } from "@/lib/admin-users.functions";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
+import type { Json } from "@/integrations/supabase/types";
 
 import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
@@ -52,7 +53,7 @@ function Admin() {
     });
     setMemberships(map);
     setEndDates(dates);
-    const { data: rq } = await (supabase as any).from("plan_requests")
+    const { data: rq } = await supabase.from("plan_requests")
       .select("*").order("created_at", { ascending: false });
     setRequests((rq ?? []) as PlanRequest[]);
   }
@@ -61,7 +62,7 @@ function Admin() {
 
   async function saveContent() {
     setSaving(true); setMsg(null);
-    const { error } = await supabase.from("site_content").upsert({ key: CONTENT_KEY, value: content as never });
+    const { error } = await supabase.from("site_content").upsert({ key: CONTENT_KEY, value: content as Json });
     setSaving(false);
     setMsg(error ? error.message : "Site updated! Refresh the home page.");
   }
@@ -69,14 +70,16 @@ function Admin() {
   async function saveEndDate(userId: string) {
     const ms = memberships[userId];
     const end = endDates[userId] || null;
+    let err;
     if (ms) {
-      await supabase.from("memberships").update({ end_date: end }).eq("user_id", userId);
+      ({ error: err } = await supabase.from("memberships").update({ end_date: end }).eq("user_id", userId));
     } else {
-      await supabase.from("memberships").insert({
+      ({ error: err } = await supabase.from("memberships").insert({
         user_id: userId, plan: "monthly", status: "active",
         start_date: new Date().toISOString().slice(0, 10), end_date: end,
-      } as never);
+      }));
     }
+    if (err) setMsg(`Failed to save: ${err.message}`);
     await loadAll();
   }
 
@@ -90,14 +93,14 @@ function Admin() {
     } else {
       await supabase.from("memberships").insert({
         user_id: r.user_id, plan: r.plan, status: "active", start_date: today,
-      } as never);
+      });
     }
-    await (supabase as any).from("plan_requests").update({ status: "approved" }).eq("id", r.id);
+    await supabase.from("plan_requests").update({ status: "approved" }).eq("id", r.id);
     await loadAll();
   }
 
   async function rejectRequest(r: PlanRequest) {
-    await (supabase as any).from("plan_requests").update({ status: "rejected" }).eq("id", r.id);
+    await supabase.from("plan_requests").update({ status: "rejected" }).eq("id", r.id);
     await loadAll();
   }
 

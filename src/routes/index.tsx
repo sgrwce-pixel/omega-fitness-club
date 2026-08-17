@@ -521,6 +521,18 @@ function Reviews() {
   );
 }
 
+/** Ensure admin-stored URLs are safe to use in href attributes.
+ * Rejects javascript:/data:/vbscript: schemes that could be XSS vectors. */
+function safeUrl(url: string, fallback = "#"): string {
+  const trimmed = (url || "").trim();
+  if (!trimmed) return fallback;
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") return trimmed;
+  } catch {}
+  return fallback;
+}
+
 function buildMapSrc(q: string): string {
   const trimmed = (q || "").trim();
   // Full Google Maps embed URL pasted directly
@@ -540,7 +552,7 @@ function buildMapSrc(q: string): string {
 
 function buildMapLink(q: string): string {
   const trimmed = (q || "").trim();
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return safeUrl(trimmed, "#");
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
 }
 
@@ -590,11 +602,11 @@ function Contact({ c }: { c: SiteContent }) {
               <div className="font-display text-2xl mt-2">{c.hours}</div>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
+              <a href={safeUrl(c.instagramUrl)} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
                 <div className="text-xs tracking-widest text-primary">{t.instagramLbl}</div>
                 <div className="font-display text-base mt-1 truncate" dir="ltr">@{c.instagram.replace(/^@/, "")}</div>
               </a>
-              <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
+              <a href={safeUrl(c.facebookUrl)} target="_blank" rel="noreferrer" className="rounded-lg border border-border bg-card p-4 hover:border-primary transition hover-lift">
                 <div className="text-xs tracking-widest text-primary">{t.facebookLbl}</div>
                 <div className="font-display text-base mt-1 truncate" dir="ltr">{c.facebook}</div>
               </a>
@@ -620,8 +632,8 @@ function Footer({ c }: { c: SiteContent }) {
           <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
         </div>
         <div className="flex items-center gap-4">
-          <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">@{c.instagram.replace(/^@/, "")}</a>
-          <a href={c.facebookUrl} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">{c.facebook}</a>
+          <a href={safeUrl(c.instagramUrl)} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">@{c.instagram.replace(/^@/, "")}</a>
+          <a href={safeUrl(c.facebookUrl)} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">{c.facebook}</a>
           <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="hover:text-primary" dir="ltr">{c.phone}</a>
         </div>
         <div className="font-display tracking-widest">{t.footerTagline}</div>

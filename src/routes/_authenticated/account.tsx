@@ -23,9 +23,10 @@ function Account() {
   const [reqPlan, setReqPlan] = useState<"monthly" | "quarterly" | "annual">("monthly");
   const [reqMsg, setReqMsg] = useState("");
   const [reqSubmitting, setReqSubmitting] = useState(false);
+  const [reqError, setReqError] = useState<string | null>(null);
 
   async function loadRequest(userId: string) {
-    const { data } = await (supabase as any).from("plan_requests")
+    const { data } = await supabase.from("plan_requests")
       .select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(1).maybeSingle();
     setRequest((data ?? null) as PlanRequest | null);
   }
@@ -48,17 +49,29 @@ function Account() {
 
   async function submitRequest() {
     if (!profile) return;
+    if (reqMsg.length > 1000) {
+      setReqError("Message must be 1000 characters or fewer.");
+      return;
+    }
     setReqSubmitting(true);
-    await (supabase as any).from("plan_requests").insert({
+    setReqError(null);
+    const { error } = await supabase.from("plan_requests").insert({
       user_id: profile.id, plan: reqPlan, message: reqMsg || null, status: "pending",
     });
-    setReqMsg("");
+    if (error) {
+      setReqError(error.message);
+    } else {
+      setReqMsg("");
+    }
     await loadRequest(profile.id);
     setReqSubmitting(false);
   }
 
   async function save() {
     if (!profile) return;
+    if ((profile.full_name?.length ?? 0) > 120) { setMsg("Full name must be 120 characters or fewer."); return; }
+    if ((profile.phone?.length ?? 0) > 32) { setMsg("Phone must be 32 characters or fewer."); return; }
+    if ((profile.fitness_goal?.length ?? 0) > 500) { setMsg("Fitness goal must be 500 characters or fewer."); return; }
     setSaving(true);
     setMsg(null);
     const { error } = await supabase.from("profiles").update({
@@ -175,8 +188,9 @@ function Account() {
                   </button>
                 ))}
               </div>
-              <textarea value={reqMsg} onChange={(e) => setReqMsg(e.target.value)} rows={3} placeholder="Optional message…"
+              <textarea value={reqMsg} onChange={(e) => setReqMsg(e.target.value)} rows={3} placeholder="Optional message…" maxLength={1000}
                 className="mt-3 w-full rounded-md bg-background border border-border px-3 py-2" />
+              {reqError && <div className="text-sm text-destructive mt-1">{reqError}</div>}
               <button onClick={submitRequest} disabled={reqSubmitting}
                 className="mt-3 rounded-md bg-primary text-primary-foreground px-5 py-2 font-semibold disabled:opacity-60">
                 {reqSubmitting ? "Submitting…" : "Submit request"}
