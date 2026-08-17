@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Mail, Instagram, Facebook, X, ArrowRight, Menu } from "lucide-react";
 
 function StatNumber({ value }: { value: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -171,251 +170,105 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     { key: "contact", label: t.navContact, href: "#contact" },
   ];
 
-  const menuRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b border-border">
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
-        <a href="#top" className="flex items-center gap-2.5 min-w-0 group">
-          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-[#8AFF3C] p-1 flex items-center justify-center shadow-[0_0_20px_-3px_rgba(138,255,60,0.45)] shrink-0 group-hover:scale-105 transition-transform">
-            <img
-              src={omegaLogo96.url}
-              alt={`${c.brandName} logo`}
-              className="h-full w-full object-contain mix-blend-multiply"
-            />
-          </div>
+        <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <img src={omegaLogo96.url} alt={`${c.brandName} logo`} width="40" height="40" className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-cover" />
           <div className="leading-tight min-w-0">
-            <div className="font-bold tracking-tight text-base sm:text-lg text-white group-hover:text-[#8AFF3C] transition-colors truncate">
-              Omega fitness
-            </div>
-            <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">
-              {c.tagline}
-            </div>
+            <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
+            <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
           </div>
         </a>
 
         <nav className="hidden lg:flex items-center gap-8 text-sm">
           {links.map((l) => (
-            <a key={l.key} href={l.href} className="hover:text-primary transition font-medium">
-              {l.label}
-            </a>
+            <a key={l.key} href={l.href} className="hover:text-primary transition">{l.label}</a>
           ))}
         </nav>
-
         <div className="flex items-center gap-2 shrink-0">
-          <div className="hidden sm:block">
-            <LanguageSwitcher />
-          </div>
-
+          <div className="hidden sm:block"><LanguageSwitcher /></div>
           {signedIn ? (
             <>
-              <Link
-                to="/account"
-                className="hidden sm:inline-flex rounded-xl border border-white/10 px-3.5 py-2 text-xs font-semibold hover:border-primary transition"
-              >
+              <Link to="/account" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
                 {t.myAccount}
               </Link>
               {isAdmin && (
-                <Link
-                  to="/admin"
-                  className="hidden md:inline-flex rounded-xl border border-primary bg-primary/10 text-primary px-3.5 py-2 text-xs font-semibold hover:bg-primary/20 transition"
-                >
+                <Link to="/admin" className="hidden md:inline-flex rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
                   {t.adminPanel}
                 </Link>
               )}
             </>
           ) : (
-            <Link
-              to="/auth"
-              className="hidden sm:inline-flex rounded-xl border border-white/10 px-3.5 py-2 text-xs font-semibold hover:border-primary transition"
-            >
+            <Link to="/auth" className="hidden sm:inline-flex rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
               {t.signIn}
             </Link>
           )}
 
-          <a
-            href="#pricing"
-            className="hidden sm:inline-flex rounded-xl bg-primary text-primary-foreground px-4 py-2 font-bold text-xs hover:opacity-90 transition shadow-[0_0_20px_-5px_rgba(138,255,60,0.4)]"
-          >
+          <a href="#pricing" className="hidden sm:inline-flex rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
             {t.joinNow}
           </a>
 
-          {/* Menu Trigger Button */}
           <button
             type="button"
             aria-label="Toggle menu"
             aria-expanded={open}
-            onClick={() => setOpen(true)}
-            className="lg:hidden flex items-center gap-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 text-white transition hover:border-[#8AFF3C]"
+            onClick={() => setOpen((v) => !v)}
+            className="lg:hidden relative w-10 h-10 grid place-items-center rounded-md border border-border text-foreground hover:border-primary transition"
           >
-            <Menu className="w-4 h-4 text-[#8AFF3C]" />
-            <span className="text-xs font-bold uppercase tracking-wider">Menu</span>
+            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "rotate-45" : "-translate-y-1.5"}`} />
+            <span className={`block w-5 h-0.5 bg-current absolute transition-opacity duration-200 ${open ? "opacity-0" : "opacity-100"}`} />
+            <span className={`block w-5 h-0.5 bg-current absolute transition-transform duration-300 ${open ? "-rotate-45" : "translate-y-1.5"}`} />
           </button>
         </div>
       </div>
 
-      {/* Sleek Popup Card Overlay (Matching Reference Image) */}
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center sm:justify-end p-4 sm:p-6 bg-black/60 backdrop-blur-md transition-all duration-200">
-          <div
-            ref={menuRef}
-            className="w-full max-w-sm rounded-3xl bg-[#0B0B0B] border border-white/10 p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col justify-between"
-            style={{
-              boxShadow: "0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px -10px rgba(138, 255, 60, 0.15)",
-            }}
-          >
-            {/* Card Header: Green Icon + Brand + Close 'X' */}
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-[#8AFF3C] p-1 flex items-center justify-center shadow-[0_0_20px_-3px_rgba(138,255,60,0.5)]">
-                  <img
-                    src={omegaLogo96.url}
-                    alt="Omega Fitness"
-                    className="h-full w-full object-contain mix-blend-multiply"
-                  />
-                </div>
-                <span className="font-bold text-white text-lg tracking-tight">
-                  Omega fitness
-                </span>
-              </div>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Vertical Link Items with Right Arrows & Divider lines */}
-            <nav className="divide-y divide-white/10 my-2">
-              {links.map((link) => (
-                <a
-                  key={link.key}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="w-full flex items-center justify-between py-3.5 font-bold text-lg text-white hover:text-[#8AFF3C] transition-colors group"
-                >
-                  <span>{link.label}</span>
-                  <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-[#8AFF3C] group-hover:translate-x-1 transition-all" />
-                </a>
-              ))}
-
-              {signedIn ? (
-                <>
-                  <Link
-                    to="/account"
-                    onClick={() => setOpen(false)}
-                    className="w-full flex items-center justify-between py-3.5 font-bold text-lg text-white hover:text-[#8AFF3C] transition-colors group"
-                  >
-                    <span>{t.myAccount}</span>
-                    <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-[#8AFF3C] group-hover:translate-x-1 transition-all" />
+      {/* Mobile drawer */}
+      <div
+        className={`lg:hidden overflow-hidden border-t border-border transition-[max-height] duration-300 ease-out ${open ? "max-h-[80vh]" : "max-h-0"}`}
+      >
+        <div className="container-x py-4 flex flex-col gap-2">
+          {links.map((l) => (
+            <a
+              key={l.key}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-2 text-sm font-semibold hover:bg-card hover:text-primary transition"
+            >
+              {l.label}
+            </a>
+          ))}
+          <div className="mt-2 pt-3 border-t border-border flex flex-wrap items-center gap-2">
+            <LanguageSwitcher />
+            {signedIn ? (
+              <>
+                <Link to="/account" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                  {t.myAccount}
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-primary bg-primary/10 text-primary px-3 py-2 text-sm font-semibold hover:bg-primary/20 transition">
+                    {t.adminPanel}
                   </Link>
-                  {isAdmin && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setOpen(false)}
-                      className="w-full flex items-center justify-between py-3.5 font-bold text-lg text-primary hover:text-[#8AFF3C] transition-colors group"
-                    >
-                      <span>{t.adminPanel}</span>
-                      <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-[#8AFF3C] group-hover:translate-x-1 transition-all" />
-                    </Link>
-                  )}
-                </>
-              ) : (
-                <Link
-                  to="/auth"
-                  onClick={() => setOpen(false)}
-                  className="w-full flex items-center justify-between py-3.5 font-bold text-lg text-white hover:text-[#8AFF3C] transition-colors group"
-                >
-                  <span>{t.signIn}</span>
-                  <ArrowRight className="w-5 h-5 text-white/40 group-hover:text-[#8AFF3C] group-hover:translate-x-1 transition-all" />
-                </Link>
-              )}
-            </nav>
-
-            {/* Language selection in mobile menu */}
-            <div className="py-2 border-t border-white/10 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Language</span>
-              <LanguageSwitcher />
-            </div>
-
-            {/* Bottom Footer Section: Social Icons + Big Green Button */}
-            <div className="pt-2">
-              <div className="flex items-center gap-5 py-3 text-[#8AFF3C]">
-                <a
-                  href="#contact"
-                  onClick={() => setOpen(false)}
-                  aria-label="Contact us"
-                  className="hover:scale-110 transition-transform"
-                >
-                  <Mail className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://instagram.com/club.omegafit"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Instagram"
-                  className="hover:scale-110 transition-transform"
-                >
-                  <Instagram className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://facebook.com/club.omegafit"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Facebook"
-                  className="hover:scale-110 transition-transform"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-              </div>
-
-              {signedIn ? (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setOpen(false);
-                    await supabase.auth.signOut();
-                    window.location.reload();
-                  }}
-                  className="w-full mt-2 rounded-2xl bg-[#8AFF3C] hover:bg-[#7BE832] text-black font-bold text-base py-3.5 text-center shadow-[0_0_25px_-5px_rgba(138,255,60,0.4)] transition-all active:scale-[0.99]"
-                >
-                  Sign out
-                </button>
-              ) : (
-                <Link
-                  to="/auth"
-                  onClick={() => setOpen(false)}
-                  className="w-full mt-2 block rounded-2xl bg-[#8AFF3C] hover:bg-[#7BE832] text-black font-bold text-base py-3.5 text-center shadow-[0_0_25px_-5px_rgba(138,255,60,0.4)] transition-all active:scale-[0.99]"
-                >
-                  {t.signIn}
-                </Link>
-              )}
-            </div>
-
+                )}
+              </>
+            ) : (
+              <Link to="/auth" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md border border-border px-3 py-2 text-sm font-semibold hover:border-primary transition">
+                {t.signIn}
+              </Link>
+            )}
+            <a href="#pricing" onClick={() => setOpen(false)} className="flex-1 min-w-[120px] text-center rounded-md bg-primary text-primary-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition">
+              {t.joinNow}
+            </a>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }
