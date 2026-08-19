@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { createMemberAccount } from "@/lib/admin-users.functions";
 import { DEFAULT_CONTENT, type SiteContent, CONTENT_KEY } from "@/lib/site-content";
 import type { Json } from "@/integrations/supabase/types";
+import { LanguageSwitcher } from "@/lib/i18n";
 
 import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
@@ -132,9 +133,11 @@ function Admin() {
                       : `Plan Requests${pendingCount ? ` (${pendingCount})` : ""}`}
               </button>
             ))}
-          </div>
-          <div className="text-[10px] tracking-widest text-primary font-semibold uppercase px-2.5 py-1 rounded bg-primary/10 border border-primary/20 hidden md:block">
-            ADMIN PANEL
+          </div>            <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <div className="text-[10px] tracking-widest text-primary font-semibold uppercase px-2.5 py-1 rounded bg-primary/10 border border-primary/20 hidden md:block">
+              ADMIN PANEL
+            </div>
           </div>
         </div>
       </div>
@@ -208,7 +211,8 @@ function Admin() {
           </div>
         ) : tab === "members" ? (
           <div className="rounded-xl border border-border overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+            <table className="w-full text-sm" style={{ minWidth: "700px" }}>
               <thead className="bg-card text-left">
                 <tr>
                   <th className="px-4 py-3">Name</th>
@@ -250,6 +254,7 @@ function Admin() {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         ) : tab === "new" ? (
           <NewMemberForm onCreated={loadAll} />

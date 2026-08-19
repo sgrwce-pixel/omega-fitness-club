@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { LanguageSwitcher } from "@/lib/i18n";
 import omegaLogo from "@/assets/omega-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/_authenticated/account")({
@@ -94,6 +95,9 @@ function Account() {
 
   return (
     <div className="min-h-screen">
+      <div className="container-x pt-6 flex justify-end">
+        <LanguageSwitcher />
+      </div>
       <main className="container-x py-8 sm:py-12 grid lg:grid-cols-3 gap-6">
         <section className="lg:col-span-2 rounded-xl border border-border bg-card p-6">
           <h1 className="font-display text-3xl">MY PROFILE</h1>

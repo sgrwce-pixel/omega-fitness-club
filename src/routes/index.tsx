@@ -43,7 +43,7 @@ import { LanguageSwitcher, applyTranslations, useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     links: [
-      { rel: "canonical", href: "https://omega-fitness-club.lovable.app" },
+      { rel: "canonical", href: "https://omega-fitness-club.vercel.app" },
       { rel: "preload", as: "image", href: dontGiveUp900.url, imageSrcSet: srcSet(dontGiveUp480, dontGiveUp900), imageSizes: "100vw", fetchpriority: "high" } as any,
     ],
     meta: [
@@ -51,18 +51,18 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Omega Fitness Club in Beni Khiar, Tunisia — premium strength & cardio equipment, expert coaches, group classes and personal training. Open daily until 11pm." },
       { property: "og:title", content: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
       { property: "og:description", content: "Premium gym in Beni Khiar with strength, cardio, coaching and group classes. Join the strongest community in Tunisia." },
-      { property: "og:url", content: "https://omega-fitness-club.lovable.app" },
+      { property: "og:url", content: "https://omega-fitness-club.vercel.app" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Omega Fitness Club" },
-      { property: "og:image", content: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/2bb8940e-78f6-4594-8570-8f495a1d40d6/omega-logo.jpg" },
+      { property: "og:image", content: "/images/omega-logo.jpg" },
       { property: "og:image:width", content: "1080" },
       { property: "og:image:height", content: "1080" },
       { property: "og:image:alt", content: "Omega Fitness Club official logo" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:url", content: "https://omega-fitness-club.lovable.app" },
+      { name: "twitter:url", content: "https://omega-fitness-club.vercel.app" },
       { name: "twitter:title", content: "Omega Fitness Club | Gym in Beni Khiar, Tunisia" },
       { name: "twitter:description", content: "Premium gym in Beni Khiar with strength, cardio, coaching and group classes." },
-      { name: "twitter:image", content: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/2bb8940e-78f6-4594-8570-8f495a1d40d6/omega-logo.jpg" },
+      { name: "twitter:image", content: "/images/omega-logo.jpg" },
     ],
     scripts: [
       {
@@ -71,7 +71,7 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Omega Fitness Club",
-          url: "https://omega-fitness-club.lovable.app",
+          url: "https://omega-fitness-club.vercel.app",
         }),
       },
       {
@@ -80,8 +80,8 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Omega Fitness Club",
-          url: "https://omega-fitness-club.lovable.app",
-          logo: "https://omega-fitness-club.lovable.app/__l5e/assets-v1/2bb8940e-78f6-4594-8570-8f495a1d40d6/omega-logo.jpg",
+          url: "https://omega-fitness-club.vercel.app",
+          logo: "/images/omega-logo.jpg",
           sameAs: [
             "https://instagram.com/omegafitness.club",
             "https://facebook.com/club.omegafit",
@@ -181,7 +181,7 @@ function Nav({ c, signedIn, isAdmin }: { c: SiteContent; signedIn: boolean; isAd
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
       <div className="container-x flex items-center justify-between gap-3 py-3 sm:py-4">
         <a href="#top" className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <img src={omegaLogo96.url} alt={`${c.brandName} logo`} width="40" height="40" className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-cover" />
+          <img src={omegaLogo96.url} alt={`${c.brandName} logo`} width="40" height="40" className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-md object-contain" />
           <div className="leading-tight min-w-0">
             <div className="font-display tracking-wider text-base sm:text-lg truncate">{c.brandName}</div>
             <div className="text-[10px] tracking-[0.2em] text-muted-foreground truncate hidden sm:block">{c.tagline}</div>
@@ -445,7 +445,24 @@ function Facility() {
 
         <div className="col-span-12 sm:col-span-6 md:col-span-3 rounded-lg bg-primary text-primary-foreground p-6 flex flex-col justify-between min-h-[160px]">
           <div className="font-display text-2xl sm:text-3xl leading-none">{t.facilityCTA}</div>
-          <a href="#contact" className="group inline-flex items-center gap-2 font-semibold mt-4">{t.visitUsShort} <span className={`transition-transform ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span></a>
+          <div className="mt-4 space-y-3">
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-lg">📍</span>
+              <span>Beni Khiar, Nabeul, Tunisia</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-lg">🕐</span>
+              <span>Open daily until 11pm</span>
+            </div>
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Beni+Khiar,+Nabeul,+Tunisia"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-2 rounded-md bg-background text-foreground px-4 py-2 font-semibold text-sm hover:opacity-90 transition"
+            >
+              Get directions <span className={`transition-transform ${dir === "rtl" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}>{arrow}</span>
+            </a>
+          </div>
         </div>
 
       </div>
@@ -623,20 +640,30 @@ function Footer({ c }: { c: SiteContent }) {
   const { t } = useI18n();
   return (
     <footer className="border-t border-border py-8 sm:py-10">
-      <div className="container-x flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-4 text-sm text-muted-foreground text-center sm:text-left">
+      <div className="container-x flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-6 sm:gap-4 text-sm text-muted-foreground">
 
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg border border-primary/20 bg-card p-0.5 flex items-center justify-center">
-            <img src={omegaLogo96.url} alt="Omega Fitness Club logo" className="h-full w-full object-contain" />
+        {/* Copyright + address */}
+        <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg border border-primary/20 bg-card p-0.5 flex items-center justify-center">
+              <img src={omegaLogo96.url} alt="Omega Fitness Club logo" className="h-full w-full object-contain" />
+            </div>
+            <span className="text-center sm:text-left">© {new Date().getFullYear()} {c.brandName}</span>
           </div>
-          <span>© {new Date().getFullYear()} {c.brandName} · {c.addressSub}</span>
+          <span className="text-center sm:text-left pl-11">{c.addressSub}</span>
         </div>
-        <div className="flex items-center gap-4">
-          <a href={safeUrl(c.instagramUrl)} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">@{c.instagram.replace(/^@/, "")}</a>
-          <a href={safeUrl(c.facebookUrl)} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">{c.facebook}</a>
-          <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="hover:text-primary" dir="ltr">{c.phone}</a>
+
+        {/* Contact links */}
+        <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-4">
+            <a href={safeUrl(c.instagramUrl)} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">@{c.instagram.replace(/^@/, "")}</a>
+            <a href={safeUrl(c.facebookUrl)} target="_blank" rel="noreferrer" className="hover:text-primary" dir="ltr">{c.facebook}</a>
+            <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="hover:text-primary" dir="ltr">{c.phone}</a>
+          </div>
         </div>
-        <div className="font-display tracking-widest">{t.footerTagline}</div>
+
+        {/* Tagline */}
+        <div className="w-full sm:w-auto text-center sm:text-left font-display tracking-widest">{t.footerTagline}</div>
       </div>
     </footer>
   );

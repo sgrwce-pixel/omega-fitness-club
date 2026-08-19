@@ -37,32 +37,29 @@ function AuthenticatedLayout() {
     navigate({ to: "/" });
   };
 
-  const navItems: CardNavItem[] = [
+  // Main nav links — displayed as flat rows in mobile menu
+  const mainLinks: CardNavItem[] = [
     {
-      label: "Train",
-      bgColor: "#1B1722",
-      textColor: "#fff",
+      label: "Main",
+      bgColor: "transparent",
+      textColor: "inherit",
       links: [
         { label: "About", href: "/#about", ariaLabel: "About Omega Fitness" },
         { label: "Programs", href: "/#programs", ariaLabel: "Our Programs" },
         { label: "Facility", href: "/#facility", ariaLabel: "Tour the Facility" },
-      ],
-    },
-    {
-      label: "Membership",
-      bgColor: "#2F293A",
-      textColor: "#fff",
-      links: [
         { label: "Pricing", href: "/#pricing", ariaLabel: "Membership Pricing" },
         { label: "My Account", href: "/account", ariaLabel: "My Account" },
-        ...(isAdmin ? [{ label: "Admin Panel", href: "/admin", ariaLabel: "Admin Panel" }] : []),
         { label: "Sign out", onClick: signOut, ariaLabel: "Sign out" },
       ],
     },
+  ];
+
+  // Social / contact links — shown as icon row at bottom of mobile menu
+  const socialLinks: CardNavItem[] = [
     {
       label: "Connect",
-      bgColor: "#8AFF3C",
-      textColor: "#0a0a0a",
+      bgColor: "transparent",
+      textColor: "inherit",
       links: [
         { label: "Contact", href: "/#contact", ariaLabel: "Contact Us", icon: "✉" },
         {
@@ -81,9 +78,11 @@ function AuthenticatedLayout() {
     },
   ];
 
+  const allItems = [...mainLinks, ...socialLinks];
+
   return (
     <div className="min-h-screen bg-background">
-      <CardNav items={navItems} userTag={userTag} isAdmin={isAdmin} onSignOut={signOut} />
+      <CardNav items={allItems} userTag={userTag} isAdmin={isAdmin} onSignOut={signOut} />
       <Outlet />
     </div>
   );

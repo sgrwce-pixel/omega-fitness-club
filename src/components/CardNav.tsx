@@ -53,6 +53,19 @@ export default function CardNav({
     };
   }, [open]);
 
+  // Split items: first group is main nav (flat rows), last group is social (icon row)
+  const mainNavLinks: CardNavLink[] = [];
+  const socialLinks: CardNavLink[] = [];
+
+  items.forEach((it, i) => {
+    if (i === items.length - 1 && it.links.some((l) => l.icon)) {
+      // Last item with icons → social links at bottom
+      it.links.forEach((l) => socialLinks.push(l));
+    } else {
+      it.links.forEach((l) => mainNavLinks.push(l));
+    }
+  });
+
   return (
     <div className="sticky top-0 z-50 w-full px-4 pt-4">
       <div
@@ -66,7 +79,7 @@ export default function CardNav({
               <img
                 src={omegaLogo.url}
                 alt="Omega Fitness logo"
-                className="h-full w-full object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
             <div className="leading-tight">
@@ -141,36 +154,36 @@ export default function CardNav({
           </div>
         </div>
 
-        {/* Expanding card panel */}
+        {/* Mobile nav panel — flat list with dividers */}
         <div
           className="grid transition-[grid-template-rows] duration-500 ease-out"
           style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
         >
           <div className="overflow-hidden">
-            <div className="grid gap-3 p-4 md:grid-cols-3">
-              {items.map((it, i) => (
-                <div
-                  key={it.label}
-                  className="group/card rounded-xl p-5 border-l-2 border-transparent hover:border-primary/30 transition-all duration-500 ease-out"
-                  style={{
-                    background: it.bgColor,
-                    color: it.textColor,
-                    transform: open ? "translateY(0)" : "translateY(20px)",
-                    opacity: open ? 1 : 0,
-                    transitionDelay: open ? `${i * 80}ms` : "0ms",
-                  }}
-                >
-                  <div className="text-xs tracking-[0.25em] opacity-70">0{i + 1}</div>
-                  <div className="font-display text-2xl mt-2">{it.label}</div>
-                  <ul className="mt-4 space-y-2">
-                    {it.links.map((l) => (
-                      <li key={l.label}>
-                        <CardLink link={l} />
-                      </li>
-                    ))}
-                  </ul>
+            <div className="p-2">
+              {/* Main nav links as flat rows */}
+              {mainNavLinks.map((link, i) => (
+                <div key={link.label} className={i < mainNavLinks.length - 1 ? "border-b border-white/10" : ""}>
+                  <NavRow link={link} />
                 </div>
               ))}
+
+              {/* Social links as icon row at the bottom */}
+              {socialLinks.length > 0 && (
+                <div className="mt-1 pt-2 border-t border-white/10 flex items-center justify-center gap-6 px-4 py-3">
+                  {socialLinks.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href ?? "#"}
+                      aria-label={link.ariaLabel ?? link.label}
+                      className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-primary transition"
+                    >
+                      {link.icon && <span className="text-primary text-base leading-none">{link.icon}</span>}
+                      <span>{link.label}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -179,8 +192,7 @@ export default function CardNav({
   );
 }
 
-function CardLink({ link }: { link: CardNavLink }) {
-  const navigate = useNavigate();
+function NavRow({ link }: { link: CardNavLink }) {
   const handleClick = async (e: React.MouseEvent) => {
     if (link.onClick) {
       e.preventDefault();
@@ -188,13 +200,7 @@ function CardLink({ link }: { link: CardNavLink }) {
     }
   };
 
-  const content = (
-    <>
-      {link.icon && <span className="text-base leading-none">{link.icon}</span>}
-      <span className="underline-offset-4 group-hover:underline flex-1">{link.label}</span>
-      <span className="transition-transform group-hover:translate-x-1">→</span>
-    </>
-  );
+  const isSignOut = link.label === "Sign out" || link.ariaLabel === "Sign out";
 
   if (link.onClick && !link.href) {
     return (
@@ -202,9 +208,17 @@ function CardLink({ link }: { link: CardNavLink }) {
         type="button"
         onClick={handleClick}
         aria-label={link.ariaLabel ?? link.label}
-        className="group inline-flex items-center gap-2 text-sm w-full text-left"
+        className={`group flex items-center justify-between w-full px-4 py-3 text-sm font-semibold transition ${
+          isSignOut
+            ? "bg-primary text-primary-foreground rounded-md mx-2 my-1"
+            : "text-foreground hover:text-primary"
+        }`}
       >
-        {content}
+        <span className="flex items-center gap-3">
+          {link.icon && <span className="text-primary text-base leading-none">{link.icon}</span>}
+          <span>{link.label}</span>
+        </span>
+        <span className="text-primary transition-transform group-hover:translate-x-1">→</span>
       </button>
     );
   }
@@ -214,9 +228,13 @@ function CardLink({ link }: { link: CardNavLink }) {
       href={link.href ?? "#"}
       onClick={handleClick}
       aria-label={link.ariaLabel ?? link.label}
-      className="group inline-flex items-center gap-2 text-sm"
+      className="group flex items-center justify-between w-full px-4 py-3 text-sm font-semibold text-foreground hover:text-primary transition"
     >
-      {content}
+      <span className="flex items-center gap-3">
+        {link.icon && <span className="text-primary text-base leading-none">{link.icon}</span>}
+        <span>{link.label}</span>
+      </span>
+      <span className="text-primary transition-transform group-hover:translate-x-1">→</span>
     </a>
   );
 }
